@@ -22,7 +22,7 @@ namespace APIkino.Extantions
                         MovieName = movie.MovieName,
                         Description = movie.description,
                         Price = movie.price,
-                        CartId = cartItem.CartId,
+                        
                         Mengde=cartItem.mengde,
                         TotalPrice= movie.price * cartItem.mengde
                     }).ToList();
@@ -33,7 +33,7 @@ namespace APIkino.Extantions
             return ( new CartItemDTO
                     {
                         Id = cartItem.Id,
-                        CartId = cartItem.CartId,
+                        userId=cartItem.userId,
                         MovieId = cartItem.MovieId,
                         MovieName = movie.MovieName,
                         Description = movie.description,

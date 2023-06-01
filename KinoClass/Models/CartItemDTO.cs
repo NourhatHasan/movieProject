@@ -10,7 +10,7 @@ namespace KinoClass.Models
    public class CartItemDTO
     {
         public int Id { get; set; }
-        public int CartId { get; set; }
+        public int userId { get; set; }
        
         public int MovieId { get; set; } //movie Id
         public string MovieName { get; set; }

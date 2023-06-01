@@ -2,8 +2,6 @@ using APIkino.Constants;
 using APIkino.Data;
 using APIkino.Repositories;
 using APIkino.Repositories.Contracts;
-using com.sun.corba.se.spi.activation;
-using com.sun.xml.@internal.ws.policy;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -81,9 +79,13 @@ builder.Services.AddAuthorization(opts =>
         .Build();
 });
 
+
+
 //HealthChecks for the database also
 builder.Services.AddHealthChecks().
     AddSqlServer(builder.Configuration.GetConnectionString("ConnectionAPIConeectionString"));
+
+builder.Services.AddHttpContextAccessor();
 
 //do not forgate to add connection string in appsetting.json
 

@@ -5,8 +5,8 @@ namespace APIkino.Repositories
 {
     public interface IShoping
     {
-        
-      
+
+        Task<KinoClass.Models.User> GetLoggedInUser();
         Task<CartItem> AddItem(CartItemToAddDto cartItemToAddDto);
         Task<CartItem> DeleteItem(int Id);
         Task<CartItem> GetItem(int id);

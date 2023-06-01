@@ -1,6 +1,5 @@
 ﻿using APIkino.Data;
 using KinoClass.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
@@ -10,29 +9,45 @@ namespace APIkino.Repositories
     public class ShopingRepository : IShoping
     {
         private readonly Context context;
-       
-        public ShopingRepository(Context context)
+        private readonly IHttpContextAccessor accessor;
+
+        public ShopingRepository(Context context, IHttpContextAccessor accessor)
         {
             this.context = context;
-           
-
-
+            this.accessor = accessor;
         }
         //to avoid that an item is added more than once
 
-        private async Task<bool> cartItemExsist(int CartId, int movieId)
+        private async Task<bool> cartItemExsist(int userId, int movieId)
         {
-            return await this.context.CartItem.AnyAsync(c => c.CartId == CartId &&
-                                                 c.MovieId == movieId);
+            return await this.context.CartItem.AnyAsync(c => c.userId ==userId &&
+                                                 c.MovieId == movieId); 
 
 
         }
+        public async Task<KinoClass.Models.User> GetLoggedInUser()
+        {
+            var userIdClaim = accessor.HttpContext.User.FindFirst("UserId");
+            if (userIdClaim == null)
+            {
+              
+                throw new Exception("UserId claim is missing");
+            }
 
-      
+            var userId = Convert.ToInt32(userIdClaim.Value);
+            return await context.Users.FirstOrDefaultAsync(x => x.Id == userId);
+        }
+
 
         public async Task<CartItem> AddItem(CartItemToAddDto cartItemToAddDto)
         {
-            if (await cartItemExsist(cartItemToAddDto.CartId, cartItemToAddDto.MovieId) == false)
+            var user =  await GetLoggedInUser();
+            int userId = user.Id;
+            if(await cartItemExsist(userId, cartItemToAddDto.MovieId) == true)
+            {
+                return null;
+            }
+           else
             {
 
                 // check if the movie exists with link quary
@@ -40,16 +55,22 @@ namespace APIkino.Repositories
                 var Item = await (from movie in this.context.movies
                                   where cartItemToAddDto.MovieId == movie.Id
                                   && cartItemToAddDto.mengde< movie.mengde
-                    select new CartItem
-                                  {
-                                      
-                                      CartId = cartItemToAddDto.CartId,
+                                select new CartItem
+                                   {
+
+                                      userId=userId,
                                       MovieId = movie.Id,
                                       mengde = cartItemToAddDto.mengde,
+                                     
 
-                                  }).SingleOrDefaultAsync();
-                if (Item != null)
-                {
+
+                                   }).SingleOrDefaultAsync();
+                if(Item == null) return null;
+                 else
+                 {
+                   
+                  
+
                     //adder to the database
                     var result = await this.context.CartItem.AddAsync(Item);
                    
@@ -59,26 +80,28 @@ namespace APIkino.Repositories
 
                     //here we return to the user the entity that has
                     //been added to the cartItem database 
-                    return result.Entity;
+                    return Item;
                 }
                
             }
-            return null;
+           
 
         }
         
         public async Task<IEnumerable<CartItem>> CartItems(int UserId)
         {
+            var user = await GetLoggedInUser();
+            var userId = user.Id;
             return await (from cart in this.context.Cart
                           join cartItem in this.context.CartItem
-                          on cart.Id equals cartItem.CartId
+                          on userId equals cartItem.userId
                           where cart.UserId == UserId
                           select new CartItem
                           {
                               Id = cartItem.Id,
                               MovieId = cartItem.MovieId,
                               mengde = cartItem.mengde,
-                              CartId = cartItem.CartId,
+                             userId = userId
                           }).ToListAsync();
 
 
@@ -100,16 +123,18 @@ namespace APIkino.Repositories
         //getting a movie from the cart
         public async Task<CartItem> GetItem(int id)
         {
-            return await (from cart in this.context.Cart
-                          join cartItem in this.context.CartItem
-                          on cart.Id equals cartItem.CartId
+            var userId = Convert.ToInt32(accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+           
+            return await (from 
+                           cartItem in this.context.CartItem
+                        
                          where cartItem.Id == id
                           select new CartItem
                           {
                               Id = cartItem.Id,
                               MovieId = cartItem.MovieId,
                               mengde = cartItem.mengde,
-                              CartId = cartItem.CartId
+                             userId= userId
                           }).SingleOrDefaultAsync();
         }
 

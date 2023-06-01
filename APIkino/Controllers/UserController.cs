@@ -19,6 +19,7 @@ namespace APIkino.Controllers
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
+        private readonly Context context;
 
         //dont forget to register the repository in program.cs
         private readonly IShoping shoping;
@@ -26,51 +27,43 @@ namespace APIkino.Controllers
 
         public UserController(IShoping shoping,
                             IRepository repository,
-                           ILogger<UserController> logger)
+                           ILogger<UserController> logger,Context context )
         {
             this.shoping = shoping;
             this.repository = repository;
             _logger = logger;
-
+            this.context = context;
         }
 
          
         [HttpGet("CurrentUser")]
-        public int GetLoggetInUserId()
+        public async Task<User> GetLoggetInUser()
         {
-            int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            return id;
+            //  int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            //var user = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+            var user = await this.shoping.GetLoggedInUser();
+            if (user != null)
+            {
+                return user;
+            }
+            throw new Exception("User not found.");
         }
 
+       
 
-    
 
 
         [HttpGet("GetItems")]
-       
         public async Task<ActionResult<IEnumerable<CartItemDTO>>> CartItems()
         {
-            
-            try
-            {
-                int userId = GetLoggetInUserId();
-                // here we returned cartItem object
-                var cartItems = await this.shoping.CartItems(userId);
+           try
+             {
 
-                if (cartItems == null)
-                {
-                    // if ther is no items in the in the shoping cart
-                    return NoContent();
-                }
-
-                //since we are getting an CartItemDTO item
-                //to the client from the actionMethod
-                //but we dont have all the data in the cart Item
-                //that we return from the Repository so
-                //we want so we need to get it from _repository
+                //get the User
+                var user = await context.Users.
+                    FirstOrDefaultAsync(x => x.Username == HttpContext.User.FindFirst(ClaimTypes.Name).Value);
+              
                 var movies = await this.repository.GetAll();
-
-                //we can make convertion to get the cartItemDto (in extention)
 
 
                 //if there is no movies in the sysem
@@ -79,7 +72,23 @@ namespace APIkino.Controllers
                     throw new Exception("No products exist in the system");
                 }
 
-                var UserCartItems = cartItems.ConvertToDto(movies);
+
+                // here we returned cartItem object
+                var cartItems = await this.shoping.CartItems(user.Id);
+
+                if (cartItems == null)
+                {
+                    // if ther is no items in the in the shoping cart
+                    return NoContent();
+                }
+
+               
+             
+
+                //we can make convertion to get the cartItemDto (in extention)
+
+
+               var UserCartItems = cartItems.ConvertToDto(movies);
                
                 return Ok(UserCartItems);
             }
@@ -100,6 +109,8 @@ namespace APIkino.Controllers
         {
             try
             {
+              
+
                 var cartItem = await this.shoping.GetItem(Id);
                 if (cartItem == null)
                 {
@@ -146,11 +157,11 @@ namespace APIkino.Controllers
                         $" retrieve movies (movieId:({cartItemToAddDto.MovieId})");
                 }
                 var MovieDto = AddMovie.convertionDTO(movie);
-
+              
                
                 
 
-                return CreatedAtAction(nameof(AddItem), new { id = MovieDto.Id }, MovieDto);
+                return CreatedAtAction(nameof(AddItem), new { id = AddMovie }, MovieDto);
             }
             catch (Exception ex)
             {
