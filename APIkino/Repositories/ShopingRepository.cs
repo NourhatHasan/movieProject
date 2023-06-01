@@ -68,8 +68,9 @@ namespace APIkino.Repositories
                 if(Item == null) return null;
                  else
                  {
-                   
-                  
+
+                    var movie = await this.context.movies.FindAsync(Item.MovieId);
+                    movie.mengde = movie.mengde - Item.mengde;
 
                     //adder to the database
                     var result = await this.context.CartItem.AddAsync(Item);
@@ -78,6 +79,7 @@ namespace APIkino.Repositories
                     await this.context.SaveChangesAsync();
 
 
+                   
                     //here we return to the user the entity that has
                     //been added to the cartItem database 
                     return Item;
@@ -147,10 +149,16 @@ namespace APIkino.Repositories
 
         public async Task<CartItem> UpdateItem(int Id, CartItemMengdeUpdate cartItemMengdeUpdate)
         {
+            
             var item = await this.context.CartItem.FindAsync(Id);
+            var gammelMengde = item.mengde;
             if (item != null)
             {
                  item.mengde = cartItemMengdeUpdate.mengde;
+
+                var movie = await this.context.movies.FindAsync(item.MovieId);
+                movie.mengde = movie.mengde+gammelMengde - item.mengde;
+
                 await this.context.SaveChangesAsync();
                 return item;
                 /*
