@@ -80,7 +80,7 @@ namespace APIkino.Repositories
             return movie;
         }
 
-        public async Task<Movies> Delete(int Id)
+        public async Task<string> Delete(int Id)
         {
             var movie = await _context.movies.FindAsync(Id);
 
@@ -89,7 +89,7 @@ namespace APIkino.Repositories
 
             await _context.SaveChangesAsync();
 
-            return movie;
+            return "deleted";
 
         }
 

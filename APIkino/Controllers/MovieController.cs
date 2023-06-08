@@ -179,10 +179,10 @@ namespace APIkino.Controllers
 
         [HttpDelete]
         [Route("{Id}")]
-        [Authorize(Policy = sjekk.MustBeTheOwner)]
+        // [Authorize(Policy = sjekk.MustBeTheOwner)]
         public async Task<ActionResult> Delete([FromRoute] int Id)
         {
-          
+
             try
             {
                 var movie = await _repository.Delete(Id);
@@ -190,11 +190,11 @@ namespace APIkino.Controllers
                 if (movie != null)
                 {
                     _logger.LogInformation("Delete: api/movies/{Id}", Id);
-                    return Ok(movie);
+                    return Ok();
 
 
                 }
-                _logger.LogError( "the Delete call to api/movie/{Id} f", Id);
+                _logger.LogError("the Delete call to api/movie/{Id} failed", Id);
 
                 return BadRequest();
             }
@@ -206,10 +206,22 @@ namespace APIkino.Controllers
                    );
 
             }
-
-           
-
         }
+
+            [HttpOptions]
+            [Route("{Id}")]
+            public IActionResult Options()
+            {
+                // Set CORS headers
+                Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+                Response.Headers.Add("Access-Control-Allow-Methods", "DELETE");
+                Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+                Response.Headers.Add("Access-Control-Max-Age", "86400");
+
+                return Ok();
+            }
+
+        
 
 
        

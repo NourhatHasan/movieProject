@@ -4,9 +4,13 @@ import { Movies } from "../Models/Movies";
 
 
 interface props {
-    movies: Movies[]
+    movies: Movies[];
+    getSelectedMovie: (id: number) => void;
+    submiting: boolean;
+    deleteMovie: (id: number) => void;
+  
 };
-export function DashItems({ movies }: props) {
+export function DashItems({ movies, getSelectedMovie, submiting, deleteMovie }: props) {
     return (
 
         <Card.Group itemsPerRow='4'>
@@ -31,26 +35,25 @@ export function DashItems({ movies }: props) {
                  </Card.Content>
                  <Button.Group widths={2} >
                      <Button basic
-                         name={movie.id}
-                       //  onClick={e => handleIsMain(photo, e)}
-                       //  loading={target === photo.id && mainLoading}
+                         // name={movie.id}
+                         onClick={() => getSelectedMovie(movie.id)}
+                       
                          color='green'
                          icon='info circle'
-                         //disabled={photo.isMain || deleteLoading}
+                         disabled={submiting}
+                       
                          fluid />
+
                      <Button
                          basic
-                         name={movie.id}
-                       //  onClick={e => handleDelete(photo.id, e)}
-                       //  loading={deleteTarget === photo.id && deleteLoading}
-
-                       //  disabled={mainLoading || photo.isMain}
-                         color='red'
-                         icon='trash'
+                         onClick={() => deleteMovie(movie.id)}
+                         loading={submiting}
+                         disabled={submiting}
+                         color="red"
+                         icon="trash"
                          fluid
-
                      />
-                 </Button.Group>
+                     </ Button.Group>
                 </Card>
          ))}
         </Card.Group>

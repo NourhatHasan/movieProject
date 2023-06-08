@@ -18,6 +18,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 
 
@@ -61,6 +70,7 @@ builder.Services.AddAuthentication(opts =>
 
 
 //authorization
+
 
 builder.Services.AddAuthorization(opts =>
 {
@@ -107,6 +117,7 @@ app.UseAuthentication(); // you are the person you say you are
 app.UseAuthorization(); //access controll (Rights to do something)
 //Authentication
 
+app.UseCors("AllowOrigin");
 
 
 app.MapControllers();

@@ -9,7 +9,7 @@ namespace APIkino.Repositories.Contracts
         Task<Movies> Geten(int Id);
         Task<Movies> AddMovie(Movies movie);
         Task<Movies> UpdateMovie(int Id,Movies movie);
-        Task<Movies> Delete(int Id);
+        Task<string> Delete(int Id);
        
     }
 }

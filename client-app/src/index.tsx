@@ -1,17 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { RouterProvider } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css'
 import './index.css';
-import App from './layout/App';
+
 
 import reportWebVitals from './reportWebVitals';
+import { router } from './routing/router';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
- 
-    <App />
+
+    <RouterProvider router={router} />
  
 );
 
