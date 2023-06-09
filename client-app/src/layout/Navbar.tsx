@@ -17,6 +17,14 @@ export default function Navbar() {
 
                 />
 
+                <Menu.Item>
+                    <Button
+                        content="add movie"
+                        color='blue'
+
+                    />
+                </Menu.Item>
+
             </Container>
 
 

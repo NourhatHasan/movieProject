@@ -33,24 +33,18 @@ export default function Details({ submiting, movie}: props) {
                     </Grid.Column>
                 </Grid>
             </Card.Content>
-            <Button.Group widths={2} >
-                <Button basic
-                    name={movie.id}
-                    onClick={e => movie}
-                    //  loading={target === photo.id && mainLoading}
-                    color='green'
-                    icon='info circle'
-                    //disabled={photo.isMain || deleteLoading}
-                    fluid />
+          
                 <Button
-                    basic
-                    name={movie.id}
-                   // onClick={() => deleteMovie(movie.id)}
-                    color="red"
-                    icon="trash"
-                    fluid
+                name={movie.id.toString()}
+                //onClick={(e) => handleView(e, movie.id)}
+                positive
+                icon='edit'
+               // disabled={submiting && viewtarget === movie.id}
+               // loading={submiting && viewtarget === movie.id}
+
+                 
                 />
-            </Button.Group>
+            
         </Card>
     )
 }

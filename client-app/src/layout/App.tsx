@@ -1,10 +1,11 @@
 
-import { useEffect, useState } from 'react';
+
 import './App.css';
-import axios from 'axios';
-import { Container, Header } from 'semantic-ui-react';
+
+import { Container } from 'semantic-ui-react';
 import { Dashboard } from '../features/dashboard';
 import Navbar from './Navbar';
+import Footer from './footer';
 
 
 
@@ -19,6 +20,7 @@ function App() {
                 <Dashboard  />
 
             </Container>
+           
         </>
          
   );

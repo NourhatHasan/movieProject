@@ -42,13 +42,13 @@ export function Dashboard() {
 
    
         try {
-            setMovie([...movie.filter(x => x.id !== id)]);
-            if (selectedMovie && selectedMovie!.id === id) {
-                setSelectedMovie(undefined)
-            }
+           
             await agent.movies.del(id).then(() => {
                
-             
+                setMovie([...movie.filter(x => x.id !== id)]);
+                if (selectedMovie && selectedMovie!.id === id) {
+                    setSelectedMovie(undefined)
+                }
               setSubmiting(false);
             })
         }
@@ -59,6 +59,37 @@ export function Dashboard() {
     
     }
 
+
+    const addUpdateMovie = async (id: number, movie: Movies) => {
+
+        setSubmiting(true);
+
+
+        try {
+            if (id) {
+                await agent.movies.update(id).then(() => {
+
+                })
+            }
+            await agent.movies.del(id).then(() => {
+
+                setMovie([...movie.filter(x => x.id !== id)]);
+                if (selectedMovie && selectedMovie!.id === id) {
+                    setSelectedMovie(undefined)
+                }
+                setSubmiting(false);
+            })
+        }
+        catch (error) {
+
+            console.error('Error occurred while deleting the movie:', error);
+        }
+
+    }
+
+
+
+
     if (loading) return <Loading content={"movies loading"} />
     return (
         <Segment divided="true">
@@ -68,7 +99,8 @@ export function Dashboard() {
                         getSelectedMovie={getSelectedMovie}
                         submiting={submiting}
                         deleteMovie={deleteMovie}
-                      
+
+
                     />
                 </Grid.Column>
                 <Grid.Column width={3}>

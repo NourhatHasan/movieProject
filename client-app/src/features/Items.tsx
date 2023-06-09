@@ -1,3 +1,4 @@
+import { SyntheticEvent, useState } from "react";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
 import { Movies } from "../Models/Movies";
 
@@ -9,8 +10,35 @@ interface props {
     submiting: boolean;
     deleteMovie: (id: number) => void;
   
+  
 };
 export function DashItems({ movies, getSelectedMovie, submiting, deleteMovie }: props) {
+
+    const [target, setTarget] = useState < number>(0);
+    const [viewtarget, setViewTarget] = useState<number>(0);
+
+
+    function handleDelete(e: SyntheticEvent<HTMLButtonElement>, id: number) {
+        setTarget(id);
+        deleteMovie(id)
+
+        if (id === viewtarget) {
+            setViewTarget(0); // Clear the selected movie state
+        }
+     
+       
+    }
+
+    function handleView(e: SyntheticEvent<HTMLButtonElement>, id: number) {
+      
+         setViewTarget(0); // Clear the selected movie state
+        
+        setViewTarget(id);
+       
+        getSelectedMovie(id)
+      
+        
+    }
     return (
 
         <Card.Group itemsPerRow='4'>
@@ -35,20 +63,22 @@ export function DashItems({ movies, getSelectedMovie, submiting, deleteMovie }: 
                  </Card.Content>
                  <Button.Group widths={2} >
                      <Button basic
-                         // name={movie.id}
-                         onClick={() => getSelectedMovie(movie.id)}
-                       
+                         name={movie.id.toString()}
+                         onClick={(e) => handleView(e, movie.id)}
                          color='green'
                          icon='info circle'
-                         disabled={submiting}
+                         disabled={submiting && viewtarget === movie.id}
+                         loading={submiting && viewtarget === movie.id}
                        
                          fluid />
 
                      <Button
                          basic
-                         onClick={() => deleteMovie(movie.id)}
-                         loading={submiting}
-                         disabled={submiting}
+                         name={movie.id.toString()}
+                        
+                         onClick={(e) => handleDelete(e, movie.id)}
+                         loading={submiting && target === movie.id}
+                         disabled={submiting && target === movie.id}
                          color="red"
                          icon="trash"
                          fluid

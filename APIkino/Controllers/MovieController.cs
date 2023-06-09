@@ -179,7 +179,7 @@ namespace APIkino.Controllers
 
         [HttpDelete]
         [Route("{Id}")]
-        // [Authorize(Policy = sjekk.MustBeTheOwner)]
+       [Authorize(Policy = sjekk.MustBeTheOwner)]
         public async Task<ActionResult> Delete([FromRoute] int Id)
         {
 
