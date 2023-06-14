@@ -1,101 +1,42 @@
 import {  Grid, Segment } from "semantic-ui-react";
-import { Movies } from "../Models/Movies";
+import { movieForm, Movies } from "../Models/Movies";
 import { DashItems } from "./Items";
 import { useEffect, useState } from 'react';
 import Details from "./ItemDetails";
 import agent from "../layout/api/agent";
 import Loading from "../layout/loading";
+import FormCE from "./formCE";
 
-export function Dashboard() {
 
-    const [movie, setMovie] = useState<Movies[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [submiting, setSubmiting] = useState(false);
-    const [selectedMovie, setSelectedMovie] = useState<Movies>();
-    useEffect(() => {
-        agent.movies.list().then(response => {
-            setMovie(response);
-            setLoading(false)
-        })
-            
-    }, [])
+interface props {
 
-    const getSelectedMovie = async (id: number) => {
+    handledeleteSetForm: () => void
+    handleSetForm: () => void
+    addUpdateMovie: (movie: Movies) => void;
+    deleteMovie: (id: number) => void;
+    getSelectedMovie: (id: number) => void;
+    loading: boolean;
+    submiting: boolean;
+    form: boolean;
+    selectedMovie: Movies | undefined;
+    movies: Movies[];
 
-        setSubmiting(true);
-        try {
-            agent.movies.details(id).then(Response => {
-                setSelectedMovie(Response);
-                setSubmiting(false);
-            })
-        }
-        catch (error) {
+}
+export function Dashboard({
+    handledeleteSetForm,
+    handleSetForm, addUpdateMovie, deleteMovie
+    , getSelectedMovie, loading, submiting, form, selectedMovie, movies
 
-            console.error('Error occurred while deleting the movie:', error);
-        }
-
-    }
-
-    const deleteMovie = async (id: number) => {
-
-        setSubmiting(true);
+}: props) {
 
    
-        try {
-           
-            await agent.movies.del(id).then(() => {
-               
-                setMovie([...movie.filter(x => x.id !== id)]);
-                if (selectedMovie && selectedMovie!.id === id) {
-                    setSelectedMovie(undefined)
-                }
-              setSubmiting(false);
-            })
-        }
-        catch (error) {
-
-            console.error('Error occurred while deleting the movie:', error);
-        }
-    
-    }
-
-
-    const addUpdateMovie = async (id: number, movie: Movies) => {
-
-        setSubmiting(true);
-
-
-        try {
-            if (id) {
-                await agent.movies.update(id).then(() => {
-
-                })
-            }
-            await agent.movies.del(id).then(() => {
-
-                setMovie([...movie.filter(x => x.id !== id)]);
-                if (selectedMovie && selectedMovie!.id === id) {
-                    setSelectedMovie(undefined)
-                }
-                setSubmiting(false);
-            })
-        }
-        catch (error) {
-
-            console.error('Error occurred while deleting the movie:', error);
-        }
-
-    }
-
-
-
 
     if (loading) return <Loading content={"movies loading"} />
     return (
         <Segment divided="true">
             <Grid>
-                <Grid.Column width={13}>
-                    <DashItems movies={movie}
+                <Grid.Column width={12}>
+                    <DashItems movies={movies}
                         getSelectedMovie={getSelectedMovie}
                         submiting={submiting}
                         deleteMovie={deleteMovie}
@@ -103,13 +44,27 @@ export function Dashboard() {
 
                     />
                 </Grid.Column>
-                <Grid.Column width={3}>
+                <Grid.Column width={4}>
+                <div>
                     <Details
-                        submiting={submiting}
-                        movie={selectedMovie}
-
+                            submiting={submiting}
+                            movie={selectedMovie}
+                            handlesetForm={handleSetForm}
                         
-                    />
+                        />
+                        {form &&
+                            (
+
+                           
+                            <FormCE
+                                handledeleteSetForm={handledeleteSetForm}
+                                movie={selectedMovie}
+                                addUpdateMovie={addUpdateMovie}
+                            />
+                              
+                            )}
+                       
+                </div>
                 </Grid.Column>
             </Grid>
            

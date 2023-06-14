@@ -4,10 +4,10 @@ import { Movies } from "../Models/Movies";
 interface props {
     submiting: boolean;
     movie: Movies | undefined;
-  
+    handlesetForm: ()=>void
 }
 
-export default function Details({ submiting, movie}: props) {
+export default function Details({ submiting, movie, handlesetForm }: props) {
 
 
     if (!movie) {
@@ -36,12 +36,12 @@ export default function Details({ submiting, movie}: props) {
           
                 <Button
                 name={movie.id.toString()}
-                //onClick={(e) => handleView(e, movie.id)}
+                onClick={() => handlesetForm()}
                 positive
                 icon='edit'
                // disabled={submiting && viewtarget === movie.id}
                // loading={submiting && viewtarget === movie.id}
-
+              
                  
                 />
             

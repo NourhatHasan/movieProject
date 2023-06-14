@@ -10,7 +10,7 @@ export const routs: RouteObject[] = [
         element: <App />,
         children: [
 
-            { path: 'movies', element: <Dashboard /> },
+         
          //   { path: 'movies/:id', element: <Details /> },
            
         ]

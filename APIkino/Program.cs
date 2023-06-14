@@ -2,8 +2,10 @@ using APIkino.Constants;
 using APIkino.Data;
 using APIkino.Repositories;
 using APIkino.Repositories.Contracts;
+using KinoClass.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -125,5 +127,26 @@ app.MapControllers();
 //Healthcheck
 //since we block all the pages so we need to add AllowAnonymous
 app.MapHealthChecks("/health").AllowAnonymous();
+
+
+//seeding the data
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+try
+{
+    //pass the datacontext and userManager to seed method
+    var context = services.GetRequiredService<Context>();
+    await context.Database.MigrateAsync();
+    await Seed.SeedData(context);
+
+}
+catch (Exception e)
+{
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(e, "error accored during seeding");
+}
+
+
+
 
 app.Run();
