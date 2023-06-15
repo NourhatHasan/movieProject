@@ -31,7 +31,8 @@ namespace APIkino.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: false),
                     MovieId = table.Column<int>(type: "int", nullable: false),
-                    mengde = table.Column<int>(type: "int", nullable: false)
+                    mengde = table.Column<int>(type: "int", nullable: false),
+                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

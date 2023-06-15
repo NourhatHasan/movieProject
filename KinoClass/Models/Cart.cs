@@ -7,14 +7,6 @@ namespace KinoClass.Models
          
         public int UserId { get; set; }
 
-
-
-
-
-       
-
-        
-
     
     }
 }

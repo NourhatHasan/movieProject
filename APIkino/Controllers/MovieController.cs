@@ -221,12 +221,26 @@ namespace APIkino.Controllers
                 return Ok();
             }
 
-        
 
-
+        [HttpOptions]
        
+        public IActionResult Option()
+        {
+            // Set CORS headers
+            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+            Response.Headers.Add("Access-Control-Allow-Methods", "POST");
+            Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            Response.Headers.Add("Access-Control-Max-Age", "86400");
 
-       
+            return Ok();
+        }
+
+
+
+
+
+
+
     }
 }
 

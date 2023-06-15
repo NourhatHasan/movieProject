@@ -1,6 +1,10 @@
 import { Button, Container, Menu } from "semantic-ui-react";
 
-export default function Navbar() {
+
+interface props{
+    handleSetForm: () => void;
+}
+export default function Navbar({ handleSetForm }: props) {
    
     return (
         <Menu inverted fixed='top' >
@@ -21,7 +25,7 @@ export default function Navbar() {
                     <Button
                         content="add movie"
                         color='blue'
-
+                        onClick={() => handleSetForm()}
 
                     />
                 </Menu.Item>

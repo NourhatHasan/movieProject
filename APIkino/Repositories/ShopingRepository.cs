@@ -1,8 +1,10 @@
 ﻿using APIkino.Data;
 using KinoClass.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
+
 using System.Security.Claims;
-using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace APIkino.Repositories
 {
@@ -61,6 +63,7 @@ namespace APIkino.Repositories
                                       userId=userId,
                                       MovieId = movie.Id,
                                       mengde = cartItemToAddDto.mengde,
+                                      price=movie.price
                                      
 
 
@@ -108,6 +111,82 @@ namespace APIkino.Repositories
 
 
 
+        }
+
+        public decimal calculateTotalAmount(int userId)
+        {
+            var totalPrice =  (from cart in context.Cart
+                                    join cartItem in context.CartItem
+                                    on cart.UserId equals cartItem.userId
+                                    where cart.UserId == userId
+                                    select cartItem.mengde * cartItem.price).Sum();
+
+            return totalPrice;
+
+        }
+
+        public PaymentResult paymentProcess([FromBody] KinoClass.Models.PaymentMethod method, decimal amount)
+        {
+            var options = new Stripe.ChargeCreateOptions
+
+            {
+                Amount = (long)(amount * 100), // Amount in cents
+                Currency = "usd",
+                Source = method.Token, // Payment token obtained from the client-side
+                Description = "Movie purchase"
+            };
+
+            var service = new ChargeService();
+            Charge charge;
+
+            try
+            {
+                charge = service.Create(options);
+            }
+            catch (StripeException ex)
+            {
+                // Handle any exceptions thrown by the payment gateway
+                return new PaymentResult { Success = false, ErrorMessage = ex.Message };
+            }
+
+
+            if (charge.Status == "succeeded")
+            {
+                return new PaymentResult { Success = true };
+            }
+            else
+            {
+                return new PaymentResult { Success = false, ErrorMessage = "Payment failed." };
+            }
+        }
+
+        public async Task UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask)
+        {
+            var cartItems = await cartItemsTask;
+
+            foreach (var item in cartItems)
+            {
+                var order = new Order
+                {
+                    UserId = userId,
+                    MovieId = item.MovieId,
+                    Mengde = item.mengde,
+                    // Set other order properties as needed
+                    OrderDate = DateTime.Now
+                };
+
+                context.Order.Add(order);
+            }
+
+            context.SaveChanges();
+        }
+
+
+        public void ClearCart(int UserId)
+        {
+            var cartItems= context.CartItem.Where(x=>x.userId==UserId).ToList();
+            context.CartItem.RemoveRange(cartItems);
+            context.SaveChanges();
         }
 
 

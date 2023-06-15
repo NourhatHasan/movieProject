@@ -8,7 +8,7 @@ interface props {
 }
 
 export default function Details({ submiting, movie, handlesetForm }: props) {
-
+   
 
     if (!movie) {
         return null;
@@ -37,6 +37,7 @@ export default function Details({ submiting, movie, handlesetForm }: props) {
                 <Button
                 name={movie.id.toString()}
                 onClick={() => handlesetForm()}
+                
                 positive
                 icon='edit'
                // disabled={submiting && viewtarget === movie.id}

@@ -8,6 +8,7 @@ namespace KinoClass.Models
 
         public int MovieId { get; set; }
         public int mengde { get; set; }
+        public decimal price { get; set; }
 
     }
 }

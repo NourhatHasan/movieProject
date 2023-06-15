@@ -7,7 +7,8 @@ import { movieForm, Movies } from '../Models/Movies';
 interface props {
     handledeleteSetForm: () => void;
     movie: Movies | undefined;
-   addUpdateMovie : (movie:Movies) => void;
+    addUpdateMovie: (movie: Movies) => void;
+    
 }
 export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: props) {
 

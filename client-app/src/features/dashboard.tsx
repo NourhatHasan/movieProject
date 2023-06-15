@@ -1,11 +1,11 @@
 import {  Grid, Segment } from "semantic-ui-react";
 import { movieForm, Movies } from "../Models/Movies";
-import { DashItems } from "./Items";
-import { useEffect, useState } from 'react';
+
 import Details from "./ItemDetails";
-import agent from "../layout/api/agent";
 import Loading from "../layout/loading";
 import FormCE from "./formCE";
+import { DashItems } from "./Items";
+
 
 
 interface props {
@@ -60,6 +60,7 @@ export function Dashboard({
                                 handledeleteSetForm={handledeleteSetForm}
                                 movie={selectedMovie}
                                 addUpdateMovie={addUpdateMovie}
+                              
                             />
                               
                             )}

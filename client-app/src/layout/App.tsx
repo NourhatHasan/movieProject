@@ -8,8 +8,7 @@ import Navbar from './Navbar';
 import { useEffect, useState } from 'react';
 import { Movies } from '../Models/Movies';
 import agent from './api/agent';
-
-
+import { v4 as uuid } from 'uuid';
 
 
 function App() {
@@ -86,8 +85,10 @@ function App() {
                 setForm(false);
             }
             else {
-
+                console.log(themovie);
+                themovie.id = parseInt(uuid())
                 await agent.movies.create(themovie);
+               
                 setMovies((prevMovies) => [...prevMovies, themovie]);
                 setSelectedMovie(themovie);
             }
@@ -99,7 +100,7 @@ function App() {
 
         catch (error) {
 
-            console.error('Error occurred while deleting the movie:', error);
+            console.error('Error occurred while creating or updating the movie:', error);
         }
 
     }
@@ -114,7 +115,7 @@ function App() {
 
     return (
         <>
-            <Navbar />
+            <Navbar handleSetForm={handleSetForm} />
             <Container style={{ marginTop: '5em' }}>
                 <Dashboard
                     handledeleteSetForm={handledeleteSetForm}

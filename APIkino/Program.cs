@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Text;
 
 
@@ -42,7 +43,11 @@ UseSqlServer(builder.Configuration.GetConnectionString("ConnectionAPIConeectionS
 builder.Services.AddScoped<IRepository,MoviesRepository>();
 builder.Services.AddScoped<IShoping, ShopingRepository>();
 
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("StripeSettings"));
 
+// Inside the Configure method
+var stripeSettings =builder.Configuration.GetSection("StripeSettings").Get<StripeSettings>();
+StripeConfiguration.ApiKey = stripeSettings.SecretKey;
 
 //Authentication
 
