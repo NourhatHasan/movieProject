@@ -11,7 +11,7 @@ import { DashItems } from "./Items";
 interface props {
 
     handledeleteSetForm: () => void
-    handleSetForm: () => void
+    handleSetForm: (id:number) => void
     addUpdateMovie: (movie: Movies) => void;
     deleteMovie: (id: number) => void;
     getSelectedMovie: (id: number) => void;
@@ -20,6 +20,7 @@ interface props {
     form: boolean;
     selectedMovie: Movies | undefined;
     movies: Movies[];
+   
 
 }
 export function Dashboard({
@@ -38,20 +39,22 @@ export function Dashboard({
                 <Grid.Column width={12}>
                     <DashItems movies={movies}
                         getSelectedMovie={getSelectedMovie}
-                        submiting={submiting}
+                        submitting={submiting}
                         deleteMovie={deleteMovie}
 
 
                     />
                 </Grid.Column>
                 <Grid.Column width={4}>
-                <div>
-                    <Details
-                            submiting={submiting}
-                            movie={selectedMovie}
-                            handlesetForm={handleSetForm}
+                    <div>
+                       
+                            <Details
+                                submiting={submiting}
+                                movie={selectedMovie}
+                                handleSetForm={() => handleSetForm(selectedMovie?.id!)}
+
+                            />
                         
-                        />
                         {form &&
                             (
 

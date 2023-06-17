@@ -54,7 +54,7 @@ namespace APIkino.Repositories
         {
             var Movie = new Movies()
             {
-                Id = mr.Id,
+               
                 MovieName = mr.MovieName,
                 description = mr.description,
                 price = mr.price,

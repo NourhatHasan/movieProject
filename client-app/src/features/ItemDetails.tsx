@@ -4,10 +4,10 @@ import { Movies } from "../Models/Movies";
 interface props {
     submiting: boolean;
     movie: Movies | undefined;
-    handlesetForm: ()=>void
+    handleSetForm: (id: number) => void
 }
 
-export default function Details({ submiting, movie, handlesetForm }: props) {
+export default function Details({ submiting, movie, handleSetForm }: props) {
    
 
     if (!movie) {
@@ -35,8 +35,8 @@ export default function Details({ submiting, movie, handlesetForm }: props) {
             </Card.Content>
           
                 <Button
-                name={movie.id.toString()}
-                onClick={() => handlesetForm()}
+                name={movie.id}
+                onClick={() => handleSetForm(movie.id)}
                 
                 positive
                 icon='edit'

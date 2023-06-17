@@ -8,8 +8,6 @@ import Navbar from './Navbar';
 import { useEffect, useState } from 'react';
 import { Movies } from '../Models/Movies';
 import agent from './api/agent';
-import { v4 as uuid } from 'uuid';
-
 
 function App() {
 
@@ -29,7 +27,7 @@ function App() {
     }, [])
 
     const getSelectedMovie = async (id: number) => {
-
+        setForm(false);
         setSubmiting(true);
         try {
             agent.movies.details(id).then(Response => {
@@ -42,6 +40,9 @@ function App() {
             console.error('Error occurred while deleting the movie:', error);
         }
 
+    }
+    const cancelSelectedMovie=()=>{
+        setSelectedMovie(undefined);
     }
 
     const deleteMovie = async (id: number) => {
@@ -85,12 +86,14 @@ function App() {
                 setForm(false);
             }
             else {
+               
                 console.log(themovie);
-                themovie.id = parseInt(uuid())
+              
                 await agent.movies.create(themovie);
                
                 setMovies((prevMovies) => [...prevMovies, themovie]);
                 setSelectedMovie(themovie);
+                setForm(false);
             }
 
 
@@ -106,7 +109,8 @@ function App() {
     }
 
 
-    const handleSetForm = () => {
+    const handleSetForm = (id?: number) => {
+        id ? getSelectedMovie(id): cancelSelectedMovie();
         setForm(true);
     }
     const handledeleteSetForm = () => {
@@ -115,17 +119,21 @@ function App() {
 
     return (
         <>
-            <Navbar handleSetForm={handleSetForm} />
+            <Navbar
+                handleSetForm={handleSetForm}
+              
+            />
             <Container style={{ marginTop: '5em' }}>
                 <Dashboard
                     handledeleteSetForm={handledeleteSetForm}
-                    handleSetForm={handleSetForm}
+                  
                     addUpdateMovie={addUpdateMovie}
                     deleteMovie={deleteMovie}
                     getSelectedMovie={getSelectedMovie}
                     loading={loading}
                     submiting={submiting}
                     form={form}
+                    handleSetForm={handleSetForm }
                     movies={movies}
                     selectedMovie={selectedMovie}
 

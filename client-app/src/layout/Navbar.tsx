@@ -3,6 +3,7 @@ import { Button, Container, Menu } from "semantic-ui-react";
 
 interface props{
     handleSetForm: () => void;
+
 }
 export default function Navbar({ handleSetForm }: props) {
    
@@ -22,12 +23,15 @@ export default function Navbar({ handleSetForm }: props) {
                 />
 
                 <Menu.Item>
-                    <Button
-                        content="add movie"
-                        color='blue'
-                        onClick={() => handleSetForm()}
+                   
+                        <Button
+                            content="add movie"
+                            color='blue'
 
-                    />
+                            onClick={() => handleSetForm()}
+
+                        />
+                    
                 </Menu.Item>
 
             </Container>

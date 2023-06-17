@@ -20,7 +20,7 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
         movieName: '',
         description: '',
         price: '',
-        mengde: ''
+        mengde: ''  
     }
 
 
