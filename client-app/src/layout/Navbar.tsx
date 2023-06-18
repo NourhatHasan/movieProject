@@ -1,12 +1,12 @@
+import { observer } from "mobx-react-lite";
 import { Button, Container, Menu } from "semantic-ui-react";
+import { useStore } from "./Stores/Store";
 
 
-interface props{
-    handleSetForm: () => void;
 
-}
-export default function Navbar({ handleSetForm }: props) {
-   
+export default observer( function Navbar() {
+
+    const { movieStore } = useStore();
     return (
         <Menu inverted fixed='top' >
             <Container >
@@ -28,7 +28,7 @@ export default function Navbar({ handleSetForm }: props) {
                             content="add movie"
                             color='blue'
 
-                            onClick={() => handleSetForm()}
+                            onClick={()=>movieStore.handleSetForm()}
 
                         />
                     
@@ -40,3 +40,4 @@ export default function Navbar({ handleSetForm }: props) {
         </Menu>
     )
 }
+)

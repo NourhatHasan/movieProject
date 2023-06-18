@@ -1,20 +1,22 @@
+import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
+import { useStore } from "../layout/Stores/Store";
 import { Movies } from "../Models/Movies";
 interface Props {
     movies: Movies[];
-    getSelectedMovie: (id: number) => void;
-    submitting: boolean;
-    deleteMovie: (id: number) => void;
+
+
 }
 
-export function DashItems({ movies, getSelectedMovie, submitting, deleteMovie }: Props) {
+export const DashItems = observer( function DashItems({ movies }: Props) {
     const [target, setTarget] = useState<number>(0);
     const [viewTarget, setViewTarget] = useState<number>(0);
+    const { movieStore } = useStore();
 
     function handleDelete(e: SyntheticEvent<HTMLButtonElement>, id: number) {
         setTarget(id);
-        deleteMovie(id);
+       movieStore.deleteMovie(id);
 
         if (id === viewTarget) {
             setViewTarget(0); // Clear the selected movie state
@@ -24,7 +26,7 @@ export function DashItems({ movies, getSelectedMovie, submitting, deleteMovie }:
     function handleView(e: SyntheticEvent<HTMLButtonElement>, id: number) {
         setViewTarget(0); // Clear the selected movie state
         setViewTarget(id);
-        getSelectedMovie(id);
+        movieStore.loadMovie(id)
     }
 
     return (
@@ -54,16 +56,16 @@ export function DashItems({ movies, getSelectedMovie, submitting, deleteMovie }:
                             onClick={(e) => handleView(e, movie.id)}
                             color="green"
                             icon="info circle"
-                            disabled={submitting && viewTarget === movie.id}
-                            loading={submitting && viewTarget === movie.id}
+                            disabled={movieStore.loading && viewTarget === movie.id}
+                            loading={movieStore.loading && viewTarget === movie.id}
                             fluid
                         />
                         <Button
                             basic
                             name={movie.id}
                             onClick={(e) => handleDelete(e, movie.id)}
-                            loading={submitting && target === movie.id}
-                            disabled={submitting && target === movie.id}
+                            loading={movieStore.loading && target === movie.id}
+                            disabled={movieStore.loading && target === movie.id}
                             color="red"
                             icon="trash"
                             fluid
@@ -74,4 +76,4 @@ export function DashItems({ movies, getSelectedMovie, submitting, deleteMovie }:
         </Card.Group>
     );
 }
-
+)

@@ -1,18 +1,18 @@
-import {  ErrorMessage, Field, Formik, FormikProps } from 'formik';
+import {  ErrorMessage, Field, Formik } from 'formik';
 
 import { Form, Button, FormField, Label, Segment, TextArea } from 'semantic-ui-react';
-import { movieForm, Movies } from '../Models/Movies';
+
+import * as Yup from 'yup';
+import { observer } from 'mobx-react-lite';
+import { useStore } from '../layout/Stores/Store';
 
 
-interface props {
-    handledeleteSetForm: () => void;
-    movie: Movies | undefined;
-    addUpdateMovie: (movie: Movies) => void;
-    
-}
-export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: props) {
+export default observer( function FormCE() {
+
+    const { movieStore: { selectedMovie: movie, handleDeleteSetForm, addMovie, updateMovie } } = useStore();
 
     console.log(movie);
+
 
     const initialValues = movie
     
@@ -25,14 +25,30 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
 
 
 
-  const handleSubmit = (values: any) => {
-      // Handle form submission
-      addUpdateMovie(values);
+    const handleSubmit = (values: any) => {
+        console.log(values);
+        if (values.id) {
+            updateMovie(values)
+        }
+        else {
+            addMovie(values);
+        }
   };
+
+    //validation
+    const validation = Yup.object({
+        movieName: Yup.string().required("movie Name is required").min(6, "min 4 letters"),
+        description: Yup.string().required("description is required").max(50, "max 50 letters"),
+        price: Yup.string().required("price is required"),
+        mengde: Yup.string().required("mengde is required"),
+       
+    })
+
 
   return (
     <Segment style={{ marginTop: '4em' }} clearing>
           <Formik
+              validationSchema={validation}
               initialValues={initialValues}
               onSubmit={handleSubmit}
               enableReinitialize
@@ -63,6 +79,12 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
                               name="description"
                               style={{ width: '100%' }}
                           />
+                          <ErrorMessage
+                              name="description"
+                              render={(error) => (
+                                  <Label basic color="red" content={error} />
+                              )}
+                          />
                       </FormField>
                       <FormField style={{ marginBottom: '1em' }} >
                           <Field
@@ -72,6 +94,12 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
                               component="input"
                               style={{ width: '100%' }}
                           />
+                          <ErrorMessage
+                              name="price"
+                              render={(error) => (
+                                  <Label basic color="red" content={error} />
+                              )}
+                          />
                       </FormField>
 
                       <FormField style={{ marginBottom: '1em' }}>
@@ -80,6 +108,12 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
                               placeholder="mengde"
                               name="mengde"
                               style={{ width: '100%' }}
+                          />
+                          <ErrorMessage
+                              name="mengde"
+                              render={(error) => (
+                                  <Label basic color="red" content={error} />
+                              )}
                           />
                       </FormField>
 
@@ -101,7 +135,7 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
                               type="button"
                               color="red"
                               floated="right"
-                              onClick={() => handledeleteSetForm()}
+                              onClick={handleDeleteSetForm}
                           >
                               Remove
                           </Button>
@@ -113,4 +147,4 @@ export default function FormCE({ handledeleteSetForm, movie, addUpdateMovie }: p
       </Formik>
     </Segment>
   );
-}
+})

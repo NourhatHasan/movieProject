@@ -1,21 +1,19 @@
+import { observer } from "mobx-react-lite";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
-import { Movies } from "../Models/Movies";
+import { useStore } from "../layout/Stores/Store";
 
-interface props {
-    submiting: boolean;
-    movie: Movies | undefined;
-    handleSetForm: (id: number) => void
-}
 
-export default function Details({ submiting, movie, handleSetForm }: props) {
-   
+
+export default observer(function Details() {
+    const { movieStore: { selectedMovie: movie, handleSetForm } } = useStore();
+
 
     if (!movie) {
         return null;
     }
 
     return (
-      
+
         <Card>
             <Card.Content>
                 <Card.Header>{movie.movieName}</Card.Header>
@@ -33,19 +31,18 @@ export default function Details({ submiting, movie, handleSetForm }: props) {
                     </Grid.Column>
                 </Grid>
             </Card.Content>
-          
-                <Button
+
+            <Button
                 name={movie.id}
-                onClick={() => handleSetForm(movie.id)}
-                
+                onClick={()=>handleSetForm(movie.id)}
+
                 positive
                 icon='edit'
-               // disabled={submiting && viewtarget === movie.id}
-               // loading={submiting && viewtarget === movie.id}
-              
-                 
-                />
-            
+           
+
+
+            />
+
         </Card>
     )
-}
+})

@@ -1,68 +1,55 @@
 import {  Grid, Segment } from "semantic-ui-react";
-import { movieForm, Movies } from "../Models/Movies";
+
 
 import Details from "./ItemDetails";
-import Loading from "../layout/loading";
+
 import FormCE from "./formCE";
 import { DashItems } from "./Items";
+import { useEffect } from "react";
+import { useStore } from "../layout/Stores/Store";
+import { observer } from "mobx-react-lite";
+import Loading from "../layout/loading";
 
 
+export const Dashboard = observer(function  Dashboard( ) {
 
-interface props {
-
-    handledeleteSetForm: () => void
-    handleSetForm: (id:number) => void
-    addUpdateMovie: (movie: Movies) => void;
-    deleteMovie: (id: number) => void;
-    getSelectedMovie: (id: number) => void;
-    loading: boolean;
-    submiting: boolean;
-    form: boolean;
-    selectedMovie: Movies | undefined;
-    movies: Movies[];
+    const { movieStore } = useStore();
    
+    useEffect(() => {
 
-}
-export function Dashboard({
-    handledeleteSetForm,
-    handleSetForm, addUpdateMovie, deleteMovie
-    , getSelectedMovie, loading, submiting, form, selectedMovie, movies
+        movieStore.loadMovies();
 
-}: props) {
+    }, [movieStore])
 
-   
 
-    if (loading) return <Loading content={"movies loading"} />
+    if (movieStore.initLoading) return <Loading content={"movies loading"} />
     return (
         <Segment divided="true">
             <Grid>
                 <Grid.Column width={12}>
-                    <DashItems movies={movies}
-                        getSelectedMovie={getSelectedMovie}
-                        submitting={submiting}
-                        deleteMovie={deleteMovie}
-
-
+                    <DashItems
+                        movies={movieStore.movies}
                     />
+
+
                 </Grid.Column>
                 <Grid.Column width={4}>
                     <div>
                        
-                            <Details
-                                submiting={submiting}
-                                movie={selectedMovie}
-                                handleSetForm={() => handleSetForm(selectedMovie?.id!)}
+                        <Details
+                           
+                           // handleSetForm={() => handleSetForm(movieStore.selectedMovie?.id!)}
 
                             />
                         
-                        {form &&
+                        {movieStore.form &&
                             (
 
                            
                             <FormCE
-                                handledeleteSetForm={handledeleteSetForm}
-                                movie={selectedMovie}
-                                addUpdateMovie={addUpdateMovie}
+                             //   handledeleteSetForm={handledeleteSetForm}
+                             
+                             // addUpdateMovie={addUpdateMovie}
                               
                             />
                               
@@ -79,4 +66,4 @@ export function Dashboard({
         </Segment>
     )
 }
-
+)
