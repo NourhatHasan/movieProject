@@ -1,50 +1,96 @@
-import {  ErrorMessage, Field, Formik } from 'formik';
+﻿import {  ErrorMessage, Field, Formik } from 'formik';
 
 import { Form, Button, FormField, Label, Segment, TextArea } from 'semantic-ui-react';
 
 import * as Yup from 'yup';
 import { observer } from 'mobx-react-lite';
 import { useStore } from '../layout/Stores/Store';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import Loading from '../layout/loading';
+import { Movies } from '../Models/Movies';
 
+interface ErrorMessageComponentProps {
+    children: React.ReactNode;
+}
 
 export default observer( function FormCE() {
 
-    const { movieStore: { selectedMovie: movie, handleDeleteSetForm, addMovie, updateMovie } } = useStore();
+    const { movieStore: { selectedMovie: movie, addMovie, updateMovie, loadMovie, initLoading, resetSelectedMovie } } = useStore();
 
     console.log(movie);
 
-
-    const initialValues = movie
-    
-        ?? {
-        movieName: '',
-        description: '',
-        price: '',
-        mengde: ''  
-    }
+    const { id } = useParams();
+    const navigate = useNavigate();
 
 
+    const ErrorMessageComponent: React.FC<ErrorMessageComponentProps> = ({ children }) => (
+        <div className="error-message">
+            <span className="error-icon">❌</span>
+            <div className="error-content">{children}</div>
+        </div>
+    );
 
-    const handleSubmit = (values: any) => {
-        console.log(values);
-        if (values.id) {
-            updateMovie(values)
+    useEffect(() => {
+        if (id) {
+            const movieId = parseInt(id, 10);
+
+            loadMovie(movieId);
+
+
         }
         else {
-            addMovie(values);
+            resetSelectedMovie();
+        }
+    }, [id, loadMovie, resetSelectedMovie])
+
+
+    const initialValues: Movies = initLoading || !id
+        ? {
+            id: 0,
+            movieName: '',
+            description: '',
+            price: 0,
+            mengde: 0,
+        }
+        : movie || {
+            id: 0,
+            movieName: '',
+            description: '',
+            price: 0,
+            mengde: 0,
+        };
+
+
+
+    const handleSubmit = (values: Movies) => {
+        console.log(values);
+        if (values.id) {
+            updateMovie(values).then(() => {
+                if (movie) {
+                navigate(`/movies/${movie.id}`);
+            } else {
+              
+                navigate('/movies');
+            }
+            });
+        }
+        else {
+        
+            addMovie(values).then(() => navigate('/movies'))
         }
   };
 
     //validation
     const validation = Yup.object({
         movieName: Yup.string().required("movie Name is required").min(6, "min 4 letters"),
-        description: Yup.string().required("description is required").max(50, "max 50 letters"),
+        description: Yup.string().required("description is required").max(500, "max 500 letters"),
         price: Yup.string().required("price is required"),
         mengde: Yup.string().required("mengde is required"),
        
     })
 
-
+    if (initLoading) return <Loading content={"Edit form loading"} />
   return (
     <Segment style={{ marginTop: '4em' }} clearing>
           <Formik
@@ -53,98 +99,54 @@ export default observer( function FormCE() {
               onSubmit={handleSubmit}
               enableReinitialize
 
-          >
-              {({ handleSubmit, isValid, isSubmitting, dirty }) => (
+            >
+                {({ handleSubmit, isValid, isSubmitting, dirty }) => (
+                    <Form onSubmit={handleSubmit} className='ui form'>
+                        <Form.Field>
+                            <label>Movie Name</label>
+                            <Field type='text' name='movieName' placeholder='Enter movie name' />
+                          <ErrorMessage name="movieName" component={ErrorMessageComponent as React.ComponentType<any>} />
 
-                  <Form onSubmit={handleSubmit} className='ui form' >
-                      <FormField style={{ marginBottom: '1em' }}>
-                          <Field
-                              type="text"
-                              component="input"
-                              placeholder="movieName"
-                              name="movieName"
-                              style={{ width: '100%' }}
-                          />
-                          <ErrorMessage
-                              name="movieName"
-                              render={(error) => (
-                                  <Label basic color="red" content={error} />
-                              )}
-                          />
-                      </FormField>
-                      <FormField style={{ marginBottom: '1em' }}>
-                          <Field
-                              as={TextArea}
-                              placeholder="description"
-                              name="description"
-                              style={{ width: '100%' }}
-                          />
-                          <ErrorMessage
-                              name="description"
-                              render={(error) => (
-                                  <Label basic color="red" content={error} />
-                              )}
-                          />
-                      </FormField>
-                      <FormField style={{ marginBottom: '1em' }} >
-                          <Field
-                              type="number"
-                              placeholder="price"
-                              name="price"
-                              component="input"
-                              style={{ width: '100%' }}
-                          />
-                          <ErrorMessage
-                              name="price"
-                              render={(error) => (
-                                  <Label basic color="red" content={error} />
-                              )}
-                          />
-                      </FormField>
-
-                      <FormField style={{ marginBottom: '1em' }}>
-                          <Field
-                              type="number"
-                              placeholder="mengde"
-                              name="mengde"
-                              style={{ width: '100%' }}
-                          />
-                          <ErrorMessage
-                              name="mengde"
-                              render={(error) => (
-                                  <Label basic color="red" content={error} />
-                              )}
-                          />
-                      </FormField>
-
-                      <Button.Group widths="2">
-                          <Button
-                              type="submit"
-                              positive
-                              floated="right"
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Description</label>
+                            <Field as={TextArea} name='description' placeholder='Enter movie description' />
+                          <ErrorMessage name="description" component={ErrorMessageComponent as React.ComponentType<any>} />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Price</label>
+                            <Field type='number' name='price' placeholder='Enter movie price' />
+                          <ErrorMessage name="price" component={ErrorMessageComponent as React.ComponentType<any>} />
+                        </Form.Field>
+                        <Form.Field>
+                            <label>Mengde</label>
+                            <Field type='number' name='mengde' placeholder='Enter movie mengde' />
+                          <ErrorMessage name="mengde" component={ErrorMessageComponent as React.ComponentType<any>} />
+                        </Form.Field>
+                        <Button.Group widths='2'>
+                            <Button
+                                type='submit'
+                                positive
+                                floated='right'
                               loading={isSubmitting}
                               disabled={isSubmitting || !dirty || !isValid}
-                          >
-                              Submit
+                            >
+                                Submit
                           </Button>
-
-
 
                           <Button
-
-                              type="button"
-                              color="red"
-                              floated="right"
-                              onClick={handleDeleteSetForm}
-                          >
-                              Remove
-                          </Button>
-
-
-                      </Button.Group>
-                  </Form>
-              )}
-      </Formik>
-    </Segment>
-  );
-})
+                                type='button'
+                                color='red'
+                                floated='right'
+                                as={Link}
+                                to='/movies'
+                           >
+                                Remove
+                            </Button>
+                        </Button.Group>
+                    </Form>
+                )}
+            </Formik>
+        </Segment>
+    );
+});

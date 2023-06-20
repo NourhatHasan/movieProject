@@ -1,5 +1,7 @@
+
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import { Movies } from "../Models/Movies";
@@ -51,15 +53,18 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                     </Card.Content>
                     <Button.Group widths={2}>
                         <Button
+                            as={Link} to={`/movies/${movie.id}`}
                             basic
                             name={movie.id}
-                            onClick={(e) => handleView(e, movie.id)}
+                          //  onClick={(e) => handleView(e, movie.id)}
                             color="green"
                             icon="info circle"
                             disabled={movieStore.loading && viewTarget === movie.id}
                             loading={movieStore.loading && viewTarget === movie.id}
                             fluid
                         />
+
+                        
                         <Button
                             basic
                             name={movie.id}

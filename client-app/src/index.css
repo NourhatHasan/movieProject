@@ -14,3 +14,24 @@ code {
 .ui.inverted.fixed.menu {
     background-image: linear-gradient(135deg, #272727, #444444, #272727) !important;
 }
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.error-icon {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.error-title {
+    font-weight: bold;
+}
+
+.error-description {
+    margin-top: 5px;
+}

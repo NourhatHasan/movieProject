@@ -1,20 +1,18 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { bool } from "yup";
 import { Movies } from "../../Models/Movies";
 import agent from "../api/agent";
 
-export default class MovieStore{
+export default class MovieStore {
     movies: Movies[] = [];
-    selectedMovie: Movies | undefined = undefined;
-    OpenForm = false;
+    selectedMovie: Movies | null = null;
     loading = false;
     initLoading = false;
-    form = false;
 
     constructor() {
-        makeAutoObservable(this)
+        makeAutoObservable(this);
     }
 
+   
 
     loadMovies = async () => {
         this.initLoading = true;
@@ -36,30 +34,38 @@ export default class MovieStore{
 
     }
 
+
     loadMovie = async (id:number) => {
-        this.OpenForm = false;
-        this.loading = true;
+
+        this.initLoading = true;
 
         try {
-            this.selectedMovie = undefined;
+           
             var movie = this.movies.find(x => x.id === id);
             if (movie) {
                 this.selectedMovie = movie;
-                this.loading = false;
+             
+
             }
           
-          
+               
                 movie = await agent.movies.details(id);
                 runInAction(() => {
-                    this.selectedMovie = movie;
-                    this.loading = false;
+
+                    this.movies.push(movie!);
+                    this.selectedMovie = movie!;
+                   
+                    this.initLoading = false;
+                   
                 })
+
 
           
 
         }
         catch (error) {
             runInAction(() => {
+                this.initLoading = false;
                 console.log(error);
             })
 
@@ -67,6 +73,10 @@ export default class MovieStore{
 
     }
 
+
+    resetSelectedMovie=() =>{
+        this.selectedMovie = null;
+    }
 
     deleteMovie = async (id: number) => {
         this.loading = true;
@@ -76,7 +86,7 @@ export default class MovieStore{
           
             this.movies = this.movies.filter(x => x.id !== id);
             if (this.selectedMovie?.id === id) {
-                this.selectedMovie = undefined;
+                this.selectedMovie = null;
                
             }
             
@@ -90,24 +100,16 @@ export default class MovieStore{
         }
     }
 
-    handleSetForm = (id?: number) => {
-        id ? this.loadMovie(id) : this.selectedMovie = undefined;
-        this.form = true;
-    }
-    handleDeleteSetForm = () => {
-        this.form = false;
-
-    }
-
     addMovie = async (movie: Movies) => {
        
         this.loading = true;
+
         try {
             await agent.movies.create(movie);
             runInAction(() => {
                 this.movies.push(movie);
                 this.selectedMovie = movie;
-                this.form = false;
+             
                 this.loading = false;
             })
            
@@ -129,7 +131,7 @@ export default class MovieStore{
             this.movies = [...this.movies.filter(x => x.id !== movie.id), movie];
         
             this.selectedMovie = movie;
-            this.form = false;
+          
             this.loading = false;
         });
     } catch (error) {

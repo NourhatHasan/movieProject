@@ -1,9 +1,5 @@
 import {  Grid, Segment } from "semantic-ui-react";
 
-
-import Details from "./ItemDetails";
-
-import FormCE from "./formCE";
 import { DashItems } from "./Items";
 import { useEffect } from "react";
 import { useStore } from "../layout/Stores/Store";
@@ -33,30 +29,7 @@ export const Dashboard = observer(function  Dashboard( ) {
 
 
                 </Grid.Column>
-                <Grid.Column width={4}>
-                    <div>
-                       
-                        <Details
-                           
-                           // handleSetForm={() => handleSetForm(movieStore.selectedMovie?.id!)}
-
-                            />
-                        
-                        {movieStore.form &&
-                            (
-
-                           
-                            <FormCE
-                             //   handledeleteSetForm={handledeleteSetForm}
-                             
-                             // addUpdateMovie={addUpdateMovie}
-                              
-                            />
-                              
-                            )}
-                       
-                </div>
-                </Grid.Column>
+              
             </Grid>
            
 

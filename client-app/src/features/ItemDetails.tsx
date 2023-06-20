@@ -1,48 +1,109 @@
 import { observer } from "mobx-react-lite";
-import { Button, Card, Grid, Icon } from "semantic-ui-react";
+import { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
+import { Button, Card, Container, Grid, Header, Icon, Item, Segment } from "semantic-ui-react";
+import Loading from "../layout/loading";
 import { useStore } from "../layout/Stores/Store";
 
 
 
-export default observer(function Details() {
-    const { movieStore: { selectedMovie: movie, handleSetForm } } = useStore();
+
+export default observer(function ItemDetails() {
+    const { movieStore } = useStore();
+    const { selectedMovie: movie, initLoading, loadMovie } = movieStore;
+    const { id } = useParams();
+
+
+    useEffect(() => {
+        if (id) {
+            const movieId = parseInt(id, 10);
+          
+            loadMovie(movieId);
+           
+
+        }
+    }, [id, loadMovie])
+
+
+
 
 
     if (!movie) {
+      
         return null;
     }
 
+    if (initLoading) return <Loading content={"movie details loading"} />
     return (
+        <Container style={{ marginTop: '10em' }}>
+            <Grid>
+                <Grid.Column width={16}>
+                    <Segment.Group>
+                        <Segment attached='top' style={{ padding: '1em', marginBottom: '2em' }}>
+                            <Item.Group>
+                                <Item.Content>
+                                    <Header
+                                        size='huge'
+                                        content={movie.movieName}
+                                        style={{ color: 'blue', padding: '0.5em' }}
+                                    />
+                                </Item.Content>
+                            </Item.Group>
+                        </Segment>
 
-        <Card>
-            <Card.Content>
-                <Card.Header>{movie.movieName}</Card.Header>
-                <Card.Description>{movie.description}</Card.Description>
-            </Card.Content>
-            <Card.Content>
-                <Grid columns={2}>
-                    <Grid.Column>
-                        <Icon name='dollar sign' />
-                        <span>{movie.price}</span>
-                    </Grid.Column>
-                    <Grid.Column>
-                        <Icon name='film' />
-                        <span>{movie.mengde}</span>
-                    </Grid.Column>
-                </Grid>
-            </Card.Content>
+                        <Segment>
+                            <Grid>
+                                <Grid.Column width={1}>
+                                    <Icon size='large' color='blue' name='info circle' />
+                                </Grid.Column>
+                                <Grid.Column width={15}>
+                                    <p>{movie.description}</p>
+                                </Grid.Column>
+                            </Grid>
+                        </Segment>
 
-            <Button
-                name={movie.id}
-                onClick={()=>handleSetForm(movie.id)}
+                        <Segment>
+                            <Grid>
+                                <Grid.Column width={8}>
+                                    <Grid.Row>
+                                        <Icon size='large' color='blue' name='dollar sign' />
+                                        <p>{movie.price}</p>
+                                    </Grid.Row>
+                                </Grid.Column>
 
-                positive
-                icon='edit'
-           
+                                <Grid.Column width={8}>
+                                    <Grid.Row>
+                                        <Icon size='large' color='blue' name='film' />
+                                        <p>{movie.mengde}</p>
+                                    </Grid.Row>
+                                </Grid.Column>
+                            </Grid>
+                        </Segment>
+
+                        <Segment attached='bottom'>
+                            <Button
+                                primary
+                                icon='edit'
+                                content='Edit Movie'
+                                as={Link} to={`/Edit/${movie.id}`}
+                            />
+                            <Button
+                                secondary
+                                icon='arrow left'
+                                content='Go Back'
+                                as={Link} to={'/movies'}
+                               
+                            />
+                        </Segment>
+                    </Segment.Group>
+                </Grid.Column>
+            </Grid>
+        </Container>
+    );
 
 
-            />
 
-        </Card>
-    )
+      
+  
+    
 })
