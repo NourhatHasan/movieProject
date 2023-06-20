@@ -159,7 +159,7 @@ namespace APIkino.Controllers
 
                 }
                 _logger.LogError("the Put call to api/movies/{Id} feiled  update value was {update}", Id, update);
-                return BadRequest();
+                return BadRequest("did not find the movie");
 
             }
             catch (Exception ex)
@@ -196,7 +196,7 @@ namespace APIkino.Controllers
                 }
                 _logger.LogError("the Delete call to api/movie/{Id} failed", Id);
 
-                return BadRequest();
+                return BadRequest("did not find the movie");
             }
             catch (Exception ex)
             {
@@ -208,37 +208,8 @@ namespace APIkino.Controllers
             }
         }
 
-            [HttpOptions]
-            [Route("{Id}")]
-            public IActionResult Options()
-            {
-                // Set CORS headers
-                Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
-                Response.Headers.Add("Access-Control-Allow-Methods", "DELETE");
-                Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
-                Response.Headers.Add("Access-Control-Max-Age", "86400");
-
-                return Ok();
-            }
-
-
-        [HttpOptions]
-       
-        public IActionResult Option()
-        {
-            // Set CORS headers
-            Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
-            Response.Headers.Add("Access-Control-Allow-Methods", "POST");
-            Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
-            Response.Headers.Add("Access-Control-Max-Age", "86400");
-
-            return Ok();
-        }
-
-
-
-
-
+          
+      
 
 
 

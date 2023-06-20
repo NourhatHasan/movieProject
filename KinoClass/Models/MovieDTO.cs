@@ -9,7 +9,8 @@ namespace KinoClass.Models
 
         [Required]
         public string? MovieName { get; set; }
-        [Required]
+      
+        [Required] 
         public string? description { get; set; }
         [Required]
         public decimal price { get; set; }

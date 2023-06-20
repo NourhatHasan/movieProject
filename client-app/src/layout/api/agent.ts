@@ -1,5 +1,7 @@
-import axios, { AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
+import { toast } from 'react-toastify';
 import { Movies } from '../../Models/Movies';
+import { router } from '../../routing/router';
 
 
 const sleep = (delay: number) => {
@@ -9,25 +11,41 @@ const sleep = (delay: number) => {
         setTimeout(resolve, delay)
     })
 }
+const responceBody = <T>(responce: AxiosResponse<T>) => responce.data;
 
-
-axios.defaults.baseURL = 'https://localhost:7155/api'
+axios.defaults.baseURL = 'https://localhost:5000/api'
 
 axios.interceptors.response.use(async responce => {
-    try {
+   
         await sleep(1000)
             return responce;
-        
-    }
-    catch (error) {
 
-        console.log(error);
-        return Promise.reject(error);
-    }
+}, (error: AxiosError) => {
+    const { data, status } = error.response as AxiosResponse;
+    switch (status) {
+        case 400:
+            toast.error("Bad-Request");
+            break;
+      
+        case 404:
+             toast.error("Not-Found");
+            { router.navigate('/notFound') }
+            break;
+        case 403:
+            toast.error("Forbidden");
 
+            break;
+        case 401:
+            toast.error("un-Authorized")
+            break;
+
+    }
+    return Promise.reject(error);
 })
 
-const responceBody= <T> (responce: AxiosResponse<T>) => responce.data;
+  
+
+
 
 
 const requests = {

@@ -35,3 +35,19 @@ code {
 .error-description {
     margin-top: 5px;
 }
+
+.custom-toast {
+    background-color: #ffcc00;
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 12px;
+}
+
+    .custom-toast.Toastify__toast--success {
+        background-color: #00cc00;
+    }
+
+    .custom-toast.Toastify__toast--error {
+        background-color: #cc0000;
+    }

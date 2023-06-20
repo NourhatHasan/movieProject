@@ -83,7 +83,7 @@ export default observer( function FormCE() {
 
     //validation
     const validation = Yup.object({
-        movieName: Yup.string().required("movie Name is required").min(6, "min 4 letters"),
+        movieName: Yup.string().required("movie Name is required").min(4, "min 4 letters"),
         description: Yup.string().required("description is required").max(500, "max 500 letters"),
         price: Yup.string().required("price is required"),
         mengde: Yup.string().required("mengde is required"),
