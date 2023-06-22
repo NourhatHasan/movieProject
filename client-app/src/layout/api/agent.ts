@@ -1,7 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
+import { request } from 'https';
 import { toast } from 'react-toastify';
 import { Movies } from '../../Models/Movies';
+import { LogInInfo, UserFormValues } from '../../Models/User';
 import { router } from '../../routing/router';
+import { store } from '../Stores/Store';
 
 
 const sleep = (delay: number) => {
@@ -14,6 +17,16 @@ const sleep = (delay: number) => {
 const responceBody = <T>(responce: AxiosResponse<T>) => responce.data;
 
 axios.defaults.baseURL = 'https://localhost:5000/api'
+
+
+
+axios.interceptors.request.use(config => {
+    const token = store.tokenStore.token
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+
+})
+
 
 axios.interceptors.response.use(async responce => {
    
@@ -64,8 +77,22 @@ const movies = {
     del: (id: number) => requests.delete<void>(`/Movie/${id}`),
 }
 
+const user = {
+    current: () => requests.get<LogInInfo>('/User/CurrentUser'),
+    logIn: (user: UserFormValues) =>
+        requests.post<LogInInfo>('/Authentication/logginn', user)
+            .catch((error: AxiosError) => {
+                if (error.response?.status === 400) {
+                    throw new Error('Bad request');
+                }
+                throw error;
+            }),
+    register: (user: UserFormValues) => requests.post<LogInInfo>('/Authentication/register', user),
+}
+
 const agent = {
-    movies
+    movies,
+    user,
 }
 
 export default agent;

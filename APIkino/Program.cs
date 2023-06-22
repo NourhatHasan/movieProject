@@ -24,12 +24,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowOrigin");
 //Authentication
 app.UseAuthentication(); // you are the person you say you are 
 app.UseAuthorization(); //access control (Rights to do something)
 //Authentication
 
-app.UseCors("AllowOrigin");
+
+
 
 app.MapControllers();
 

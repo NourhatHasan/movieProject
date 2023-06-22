@@ -12,8 +12,8 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\build</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\layout\api\" />
-    <Folder Include="src\layout\Stores\" />
+    <Folder Include="src\features\Modals\" />
+    <Folder Include="src\features\Users\" />
     <Folder Include="src\Models\" />
   </ItemGroup>
 </Project>

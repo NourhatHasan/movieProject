@@ -15,7 +15,7 @@ namespace APIkino.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [AllowAnonymous]
+  
     public class MovieController : ControllerBase
     {
         private readonly ILogger<MovieController> _logger;

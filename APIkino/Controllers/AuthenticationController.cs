@@ -106,19 +106,15 @@ public class AuthenticationController : ControllerBase
             var token = this.GetToken(authClaim);
 
 
-            var user = new User
-            {
-                Username = request.Username,
-                Password = Innpassword,
-
-            };
+           
            
 
             //return our token 
             return Ok(new
             {
-                
-                user,
+
+                Username = request.Username,
+                Password = Innpassword,
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 Exception = token.ValidTo,
 

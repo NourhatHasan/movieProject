@@ -1,13 +1,14 @@
 import { observer } from "mobx-react-lite";
 import { Link, NavLink } from "react-router-dom";
-import { Button, Container, Menu } from "semantic-ui-react";
+import { Button, Container, Menu, Dropdown, Icon } from "semantic-ui-react";
+import { useStore } from "./Stores/Store";
 
 
 
 
 export default observer( function Navbar() {
 
-   
+    const { userStore } = useStore();
     return (
         <Menu inverted fixed='top' >
             <Container >
@@ -37,6 +38,23 @@ export default observer( function Navbar() {
                         />
                     
                 </Menu.Item>
+
+              
+                    <Menu.Item position="right">
+                        <Dropdown pointing="top right" text={userStore.user?.username} className="user-dropdown">
+                            <Dropdown.Menu>
+                                <Dropdown.Item as={Link} to={``} className="dropdown-item">
+                                    <Icon name="user" />
+                                    Profile
+                                </Dropdown.Item>
+                                <Dropdown.Item onClick={userStore.logout} className="dropdown-item">
+                                    <Icon name="power" />
+                                    Log Out
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Menu.Item>
+               
 
             </Container>
 
