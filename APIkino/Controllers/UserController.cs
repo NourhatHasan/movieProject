@@ -3,15 +3,13 @@ using APIkino.Data;
 using APIkino.Extantions;
 using APIkino.Repositories;
 using APIkino.Repositories.Contracts;
-using com.sun.corba.se.spi.activation;
-using com.sun.xml.@internal.bind.v2.model.core;
+
 using KinoClass.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using Convert = System.Convert;
+
 
 namespace APIkino.Controllers
 {

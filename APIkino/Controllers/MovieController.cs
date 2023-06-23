@@ -32,6 +32,7 @@ namespace APIkino.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
 
         //the banefet of returning ActionResult is that
         //as well as returning the requested data to the client,
@@ -78,7 +79,7 @@ namespace APIkino.Controllers
         [HttpGet]
         [Route("{Id}")]
         [Authorize(Policy = sjekk.MustBeTheOwner)]
-
+        [AllowAnonymous]
         public async Task<ActionResult<Movies>> Geten([FromRoute] int Id)
         {
             

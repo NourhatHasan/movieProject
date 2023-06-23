@@ -24,21 +24,23 @@ export default observer( function Navbar() {
 
                 />
 
-               
+                {userStore.user?.username == 'Solin' && (
+                    <Menu.Item as={NavLink} to={'/createMovie'} >
 
-                <Menu.Item as={NavLink} to={'/createMovie'} >
-                   
                         <Button
-                        content="add movie"
-                        color='blue'
+                            content="add movie"
+                            color='blue'
 
-                    
-                     
+
+
 
                         />
-                    
-                </Menu.Item>
 
+                    </Menu.Item>
+
+                )}
+
+               
               
                     <Menu.Item position="right">
                         <Dropdown pointing="top right" text={userStore.user?.username} className="user-dropdown">

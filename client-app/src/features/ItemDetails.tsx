@@ -9,7 +9,7 @@ import { useStore } from "../layout/Stores/Store";
 
 
 export default observer(function ItemDetails() {
-    const { movieStore } = useStore();
+    const { movieStore, userStore } = useStore();
     const { selectedMovie: movie, initLoading, loadMovie } = movieStore;
     const { id } = useParams();
 
@@ -81,12 +81,14 @@ export default observer(function ItemDetails() {
                         </Segment>
 
                         <Segment attached='bottom'>
-                            <Button
-                                primary
-                                icon='edit'
-                                content='Edit Movie'
-                                as={Link} to={`/Edit/${movie.id}`}
-                            />
+                            {userStore.user?.username == 'Solin' && (
+                                <Button
+                                    primary
+                                    icon='edit'
+                                    content='Edit Movie'
+                                    as={Link} to={`/Edit/${movie.id}`}
+                                />
+                            )}
                             <Button
                                 secondary
                                 icon='arrow left'

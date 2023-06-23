@@ -1,4 +1,5 @@
 
+import { truncate } from "fs";
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
 import { Link } from "react-router-dom";
@@ -14,7 +15,19 @@ interface Props {
 export const DashItems = observer( function DashItems({ movies }: Props) {
     const [target, setTarget] = useState<number>(0);
     const [viewTarget, setViewTarget] = useState<number>(0);
-    const { movieStore } = useStore();
+    const { movieStore, userStore } = useStore();
+
+
+    const truncateDes = (description: string, maxWords: number) => {
+        const words = description.split(' ');
+        if (words.length > maxWords) {
+            return words.slice(0, maxWords).join(' ') + '...';
+        }
+        return description;
+    };
+
+
+
 
     function handleDelete(e: SyntheticEvent<HTMLButtonElement>, id: number) {
         setTarget(id);
@@ -37,7 +50,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                 <Card key={String(movie.id)}>
                     <Card.Content>
                         <Card.Header>{movie.movieName}</Card.Header>
-                        <Card.Description>{movie.description}</Card.Description>
+                        <Card.Description>{truncateDes(movie.description || '',6)}</Card.Description>
                     </Card.Content>
                     <Card.Content>
                         <Grid columns={2}>
@@ -64,18 +77,32 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                             fluid
                         />
 
-                        
-                        <Button
-                            basic
-                            name={movie.id}
-                            onClick={(e) => handleDelete(e, movie.id)}
-                            loading={movieStore.loading && target === movie.id}
-                            disabled={movieStore.loading && target === movie.id}
-                            color="red"
-                            icon="trash"
-                            fluid
-                        />
+                        {userStore.user?.username == 'Solin' ? (
+                            <Button
+                                basic
+                                name={movie.id}
+                                onClick={(e) => handleDelete(e, movie.id)}
+                                loading={movieStore.loading && target === movie.id}
+                                disabled={movieStore.loading && target === movie.id}
+                                color="red"
+                                icon="trash"
+                                fluid
+                            />
+                        ) : (
+                            <Button
+                                basic
+                                name={movie.id}
+                                // onClick={(e) => handleDelete(e, movie.id)}
+                                loading={movieStore.loading && target === movie.id}
+                                disabled={movieStore.loading && target === movie.id}
+                                color="blue"
+                                icon="cart plus"
+                                fluid
+                            />
+                        )}
+
                     </Button.Group>
+
                 </Card>
             ))}
         </Card.Group>
