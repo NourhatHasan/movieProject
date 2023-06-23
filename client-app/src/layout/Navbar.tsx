@@ -24,7 +24,7 @@ export default observer( function Navbar() {
 
                 />
 
-                {userStore.user?.username == 'Solin' && (
+                {userStore.user?.username === 'Solin' && (
                     <Menu.Item as={NavLink} to={'/createMovie'} >
 
                         <Button
@@ -40,24 +40,29 @@ export default observer( function Navbar() {
 
                 )}
 
-               
+             
               
-                    <Menu.Item position="right">
-                        <Dropdown pointing="top right" text={userStore.user?.username} className="user-dropdown">
-                            <Dropdown.Menu>
-                                <Dropdown.Item as={Link} to={``} className="dropdown-item">
-                                    <Icon name="user" />
-                                    Profile
-                                </Dropdown.Item>
-                                <Dropdown.Item onClick={userStore.logout} className="dropdown-item">
-                                    <Icon name="power" />
-                                    Log Out
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                <Menu.Item position="right">
+                    <Dropdown pointing="top right" text={userStore.user?.username} className="user-dropdown">
+                        <Dropdown.Menu>
+                            <Dropdown.Item as={Link} to={``} className="dropdown-item">
+                                <Icon name="user" />
+                                Profile
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={userStore.logout} className="dropdown-item">
+                                <Icon name="power" />
+                                Log Out
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                   
+                  
+                </Menu.Item>
+                {userStore.user?.username !== 'Solin' && (
+                    <Menu.Item>
+                        <Icon name="shopping bag" style={{ marginRight: '10px' }} />
                     </Menu.Item>
-               
-
+                )}
             </Container>
 
 

@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Link } from "react-router-dom";
 import { Container, Segment, Image, Header, Button } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
+
 import LogIn from "./Users/LogIn";
 import Register from "./Users/Register";
 

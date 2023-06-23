@@ -233,58 +233,5 @@ namespace APIkino.Controllers
             }
         }
 
-
-        /*
-
-        public async Task<IActionResult> CompletePurchase(List<int> filmIds)
-        {
-            // Hent den innloggede brukeren
-            var user = await GetLoggetInUser();
-
-            // Hent filmene fra databasen basert på filmIds
-            var filmer = await context.movies.Where(x => filmIds.Contains(x.Id)).ToListAsync();
-
-            // Simulér betaling via PayPal
-
-            // Beregn den totale betalingsbeløpet basert på filmprisene
-            var totalAmount = filmer.Sum(film => film.price);
-
-            // Opprett en betalingsforespørsel til PayPal
-            var paymentRequest = new PayPalPaymentRequest
-            {
-                Amount = totalAmount,
-                // Beskrivelse kan være en kombinasjon av tittelene på filmene
-                Description = string.Join(", ", filmer.Select(film => film.MovieName)),
-                // Legg til annen relevant informasjon som adresser, valuta, osv.
-            };
-
-            var paypalService = new PayPalService();
-
-            // Send betalingsforespørselen til PayPal og få en betalings-ID tilbake
-            var paymentId = await paypalService.CreatePayment(paymentRequest);
-
-            // Lagre betalingsinformasjonen i databasen eller i brukerens handlekurv
-
-            // Fullfør betalingen i PayPal
-            var paymentResult = await paypalService.ExecutePayment(paymentId);
-
-            if (paymentResult.Success)
-            {
-                // Betalingen er fullført, utfør de nødvendige handlingene
-                // For eksempel oppdater brukerens handlekurv, lagre kjøpshistorikk, osv.
-
-                return RedirectToAction("PurchaseSuccess");
-            }
-            else
-            {
-                // Betalingen feilet, håndter feilen (for eksempel vis en feilmelding til brukeren)
-                return RedirectToAction("PurchaseFailed");
-            }
-        }
-    }
-        */
-
-
-
     }
 }

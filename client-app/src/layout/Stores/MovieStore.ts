@@ -5,8 +5,8 @@ import agent from "../api/agent";
 export default class MovieStore {
     movies: Movies[] = [];
     selectedMovie: Movies | null = null;
-    loading = false;
-    initLoading = false;
+    loading: boolean = false;
+    initLoading: boolean = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -35,7 +35,7 @@ export default class MovieStore {
     }
 
 
-    loadMovie = async (id:number) => {
+    loadMovie = async (id: number) => {
 
         this.initLoading = true;
 
@@ -139,7 +139,11 @@ export default class MovieStore {
             console.log(error);
         });
     }
-}
+    }
+
+    changeMenegde = (movie: Movies, mengde:number) => {
+        this.selectedMovie!.mengde = this.selectedMovie!.mengde - mengde;
+    }
 
 
 }

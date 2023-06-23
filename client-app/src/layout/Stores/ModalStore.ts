@@ -6,7 +6,7 @@ interface Modal {
     open: boolean;
 }
 
-export default class modalStore {
+export default class ModalStore {
     static openModal(arg0: JSX.Element): void {
         throw new Error("Method not implemented.");
     }

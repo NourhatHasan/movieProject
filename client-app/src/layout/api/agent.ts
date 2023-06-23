@@ -1,6 +1,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { request } from 'https';
+import { request } from 'http';
 import { toast } from 'react-toastify';
+import { CardItemMengdeUpdate } from '../../Models/CardItemMengdeUpdate';
+import { CardItems } from '../../Models/CardItems';
+import { CardItemToAdd } from '../../Models/CardItemToAdd';
 import { Movies } from '../../Models/Movies';
 import { LogInInfo, UserFormValues } from '../../Models/User';
 import { router } from '../../routing/router';
@@ -90,9 +93,18 @@ const user = {
     register: (user: UserFormValues) => requests.post<LogInInfo>('/Authentication/register', user),
 }
 
+const card = {
+    CartItems: () => requests.get<CardItems[]>('/User/GetItems'),
+    CartItem: (id: number) => requests.get<CardItems>(`/User/${id}`),
+    AddItem: (movie: CardItemToAdd) => requests.post<CardItems>('/User', movie),
+    deleteItem: (id: number) => requests.delete<CardItems>(`/User/${id}`),
+    updateMenegde: (id: number, update: CardItemMengdeUpdate) => requests.put(`/User/${id}`, update)
+}
+
 const agent = {
     movies,
     user,
+    card,
 }
 
 export default agent;

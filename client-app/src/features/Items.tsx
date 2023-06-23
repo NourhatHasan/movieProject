@@ -1,22 +1,33 @@
 
-import { truncate } from "fs";
+ 
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
+import { CardItemToAdd } from "../Models/CardItemToAdd";
 import { Movies } from "../Models/Movies";
+
+
+
 interface Props {
     movies: Movies[];
-
+  
 
 }
 
 export const DashItems = observer( function DashItems({ movies }: Props) {
+   
     const [target, setTarget] = useState<number>(0);
     const [viewTarget, setViewTarget] = useState<number>(0);
-    const { movieStore, userStore } = useStore();
+    const { movieId } = useParams();
 
+
+    // Create a new CardItemToAdd instance with movieId from useParams() and mengde set to 1
+    const cardItem: CardItemToAdd = {
+        movieId: parseInt(movieId!),
+        mengde: 1,
+    };
 
     const truncateDes = (description: string, maxWords: number) => {
         const words = description.split(' ');
@@ -27,6 +38,13 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
     };
 
 
+    const { movieStore, userStore, shopingStore } = useStore();
+
+
+    function handleAdding() {
+        
+        shopingStore.addToCard(cardItem);
+    }
 
 
     function handleDelete(e: SyntheticEvent<HTMLButtonElement>, id: number) {
@@ -38,12 +56,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
         }
     }
 
-    function handleView(e: SyntheticEvent<HTMLButtonElement>, id: number) {
-        setViewTarget(0); // Clear the selected movie state
-        setViewTarget(id);
-        movieStore.loadMovie(id)
-    }
-
+   
     return (
         <Card.Group itemsPerRow="4">
             {movies.map((movie: Movies) => (
@@ -92,9 +105,9 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                             <Button
                                 basic
                                 name={movie.id}
-                                // onClick={(e) => handleDelete(e, movie.id)}
-                                loading={movieStore.loading && target === movie.id}
-                                disabled={movieStore.loading && target === movie.id}
+                                onClick={handleAdding}
+                                loading={shopingStore.loading}
+                                disabled={shopingStore.loading}
                                 color="blue"
                                 icon="cart plus"
                                 fluid

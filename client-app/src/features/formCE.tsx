@@ -4,11 +4,13 @@ import { Form, Button, Segment, TextArea } from 'semantic-ui-react';
 
 import * as Yup from 'yup';
 import { observer } from 'mobx-react-lite';
-import { useStore } from '../layout/Stores/Store';
+
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import Loading from '../layout/loading';
 import { Movies } from '../Models/Movies';
+import { useStore } from '../layout/Stores/Store';
+
 
 interface ErrorMessageComponentProps {
     children: React.ReactNode;

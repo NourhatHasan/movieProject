@@ -1,5 +1,4 @@
 ﻿using KinoClass.Models;
-using NPOI.SS.Formula.Functions;
 
 namespace APIkino.Extantions
 {
@@ -17,7 +16,7 @@ namespace APIkino.Extantions
                     on cartItem.MovieId equals movie?.Id
                     select new CartItemDTO
                     {
-                        Id = cartItem.Id,
+                     
                         MovieId = cartItem.MovieId,
                         MovieName = movie.MovieName,
                         Description = movie.description,
@@ -32,7 +31,7 @@ namespace APIkino.Extantions
         {
             return ( new CartItemDTO
                     {
-                        Id = cartItem.Id,
+                      
                         userId=cartItem.userId,
                         MovieId = cartItem.MovieId,
                         MovieName = movie.MovieName,
