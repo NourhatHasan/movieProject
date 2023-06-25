@@ -32,7 +32,7 @@ export default class ShopingStore {
                 this.CardItems.push(item);
 
                 let theMovie = this.movies.find(x => x.id === item.movieId);
-
+                console.log(theMovie);
 
                 if (theMovie) {
                     store.movieStore.changeMenegde(theMovie, item.mengde);

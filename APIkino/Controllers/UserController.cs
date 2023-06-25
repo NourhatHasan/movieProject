@@ -5,7 +5,7 @@ using APIkino.Repositories;
 using APIkino.Repositories.Contracts;
 
 using KinoClass.Models;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -15,7 +15,7 @@ namespace APIkino.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   
+  
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
@@ -37,6 +37,7 @@ namespace APIkino.Controllers
 
 
         [HttpGet("CurrentUser")]
+        [AllowAnonymous]
         public async Task<User> GetLoggetInUser()
         {
             //  int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -54,6 +55,7 @@ namespace APIkino.Controllers
 
 
         [HttpGet("GetItems")]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<CartItemDTO>>> CartItems()
         {
             try
@@ -105,6 +107,7 @@ namespace APIkino.Controllers
 
         [HttpGet]
         [Route("{Id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CartItemDTO>> GetItem(int Id)
         {
             try
@@ -140,6 +143,7 @@ namespace APIkino.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<CartItemDTO>> AddItem([FromBody] CartItemToAddDto cartItemToAddDto)
         {
             try
@@ -172,9 +176,10 @@ namespace APIkino.Controllers
             }
         }
 
+
+
         [HttpDelete("{Id:int}")]
-
-
+        [AllowAnonymous]
         public async Task<ActionResult<CartItemDTO>> DeleteItem(int id)
         {
             try
@@ -205,6 +210,7 @@ namespace APIkino.Controllers
             }
         }
         [HttpPatch("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CartItemDTO>> UpdateItem(int Id, CartItemMengdeUpdate cartUpdate)
         {
             try

@@ -2,7 +2,7 @@
  
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import { CardItemToAdd } from "../Models/CardItemToAdd";
@@ -19,15 +19,10 @@ interface Props {
 export const DashItems = observer( function DashItems({ movies }: Props) {
    
     const [target, setTarget] = useState<number>(0);
+    const [addTarget, SetAddTarget] = useState<number>(0);
     const [viewTarget, setViewTarget] = useState<number>(0);
-    const { movieId } = useParams();
+    
 
-
-    // Create a new CardItemToAdd instance with movieId from useParams() and mengde set to 1
-    const cardItem: CardItemToAdd = {
-        movieId: parseInt(movieId!),
-        mengde: 1,
-    };
 
     const truncateDes = (description: string, maxWords: number) => {
         const words = description.split(' ');
@@ -41,8 +36,13 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
     const { movieStore, userStore, shopingStore } = useStore();
 
 
-    function handleAdding() {
-        
+    function handleAdding(e: SyntheticEvent<HTMLButtonElement>, movieId: number) {
+        SetAddTarget(movieId);
+        const cardItem: CardItemToAdd = {
+            movieId: movieId,
+            mengde: 1,
+        };
+        console.log(cardItem);
         shopingStore.addToCard(cardItem);
     }
 
@@ -90,7 +90,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                             fluid
                         />
 
-                        {userStore.user?.username == 'Solin' ? (
+                        {userStore.user?.username ==='Solin' ? (
                             <Button
                                 basic
                                 name={movie.id}
@@ -104,10 +104,10 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                         ) : (
                             <Button
                                 basic
-                                name={movie.id}
-                                onClick={handleAdding}
-                                loading={shopingStore.loading}
-                                disabled={shopingStore.loading}
+                                    name={movie.id}
+                                    onClick={(e) => console.log(handleAdding(e, movie.id))}                      
+                                    loading={shopingStore.loading && addTarget === movie.id}
+                                    disabled={shopingStore.loading && addTarget === movie.id}
                                 color="blue"
                                 icon="cart plus"
                                 fluid

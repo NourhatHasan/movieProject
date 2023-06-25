@@ -141,9 +141,11 @@ export default class MovieStore {
     }
     }
 
-    changeMenegde = (movie: Movies, mengde:number) => {
-        this.selectedMovie!.mengde = this.selectedMovie!.mengde - mengde;
+    changeMenegde = (movie: Movies, mengde: number) => {
+        if (movie) {
+            movie.mengde = (movie.mengde || 0) - mengde;
+        } else {
+            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+        }
     }
-
-
 }

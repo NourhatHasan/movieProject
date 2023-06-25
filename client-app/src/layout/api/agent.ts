@@ -1,5 +1,4 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
-import { request } from 'http';
 import { toast } from 'react-toastify';
 import { CardItemMengdeUpdate } from '../../Models/CardItemMengdeUpdate';
 import { CardItems } from '../../Models/CardItems';
@@ -19,11 +18,11 @@ const sleep = (delay: number) => {
 }
 const responceBody = <T>(responce: AxiosResponse<T>) => responce.data;
 
-axios.defaults.baseURL = 'https://localhost:5000/api'
+axios.defaults.baseURL = 'http://localhost:5000/api'
 
 
 
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use((config: any) => {
     const token = store.tokenStore.token
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;

@@ -47,6 +47,7 @@ namespace APIkino.Repositories
             int userId = user.Id;
             if(await cartItemExsist(userId, cartItemToAddDto.MovieId) == true)
             {
+
                 return null;
             }
            else
@@ -62,7 +63,7 @@ namespace APIkino.Repositories
 
                                       userId=userId,
                                       MovieId = movie.Id,
-                                      mengde = cartItemToAddDto.mengde,
+                                      mengde = 1,
                                       price=movie.price
                                      
 
