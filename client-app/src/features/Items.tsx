@@ -105,7 +105,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
                             <Button
                                 basic
                                     name={movie.id}
-                                    onClick={(e) => console.log(handleAdding(e, movie.id))}                      
+                                    onClick={(e) => handleAdding(e, movie.id)}                      
                                     loading={shopingStore.loading && addTarget === movie.id}
                                     disabled={shopingStore.loading && addTarget === movie.id}
                                 color="blue"

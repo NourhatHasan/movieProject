@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouteObject } from "react-router-dom"
+import CardItems from "../features/CardItems"
 import { Dashboard } from "../features/dashboard"
 import FormCE from "../features/formCE"
 import Home from "../features/Home"
@@ -21,6 +22,7 @@ export const routs: RouteObject[] = [
             { path: '/createMovie', element: <FormCE key='create' /> },
             { path: '/logIn', element: <LogIn /> },
             { path: '/register', element: <Register /> },
+            { path: '/CardItems', element: <CardItems /> },
            
            { path: 'notFound', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='/NotFound' /> }

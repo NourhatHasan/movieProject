@@ -1,5 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
-import { CardItems } from "../../Models/CardItems";
+import { CardItem, CardItems } from "../../Models/CardItems";
 import { CardItemToAdd } from "../../Models/CardItemToAdd";
 
 import agent from "../api/agent";
@@ -19,7 +19,7 @@ export default class ShopingStore {
     }
     get movies() {
       
-        console.log(this.movieStore.movies);
+
         return this.movieStore.movies;
     }
 
@@ -28,8 +28,16 @@ export default class ShopingStore {
 
         try {
             var item = await agent.card.AddItem(movie);
-            runInAction(async () => {
-
+            runInAction( () => {
+                const cardItem = new CardItem(
+                    item.userId,
+                    item.movieId,
+                    item.movieName,
+                    item.description,
+                    item.price,
+                    item.totalPrice,
+                    1 
+                );
                 this.CardItems.push(item);
 
                 let theMovie = this.movies.find(x => x.id === item.movieId);
@@ -62,6 +70,7 @@ export default class ShopingStore {
 
             runInAction(() => {
                 this.CardItems = items;
+                console.log(items.map((item) => item.mengde));
                 this.itemLoading = false;
             })
         }
