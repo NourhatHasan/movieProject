@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Button, Container, Menu, Dropdown, Icon, Label, Popup } from "semantic-ui-react";
 import ShopingStore from "./Stores/shopingStore";
@@ -14,9 +14,13 @@ export default observer(function Navbar() {
 
     const { userStore, shopingStore } = useStore();
 
+
+
     useEffect(() => {
         shopingStore.loadCardMovies();
     }, [shopingStore]);
+
+   
 
     return (
         <Menu inverted fixed='top' >
@@ -66,22 +70,20 @@ export default observer(function Navbar() {
 
                 {userStore.user?.username !== 'Solin' && (
                     <Menu.Item style={{ marginTop: '10px' }} >
-                        <Button
-                            color={shopingStore.CardItems.length > 0 ? 'blue' : undefined}
-                            as={Link} to={'/CardItems'}
-                        >
-                            <Icon name="shopping bag" style={{ marginRight: '10px' }}
-                               
+                        <Popup
+                            hoverable
+                            trigger={
+                                <Button color="blue" icon>
+                                    <Icon name="shopping bag" style={{ marginRight: "10px" }} />
+                                    {shopingStore.CardItems.length > 0 && (
+                                        <Label circular color="red" size="tiny" floating>
+                                            {shopingStore.CardItems.length}
+                                        </Label>
+                                    )}
+                                </Button>
+                            }
+                            content=<CardItems />
                             />
-                        
-                           
-
-                            {shopingStore.CardItems.length > 0 && (
-                                <Label circular color="red" size="tiny" floating>
-                                    {shopingStore.CardItems.length}
-                                </Label>
-                            )}
-                        </Button>
                     </Menu.Item>
                  
                 )}

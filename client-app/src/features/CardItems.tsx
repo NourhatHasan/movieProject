@@ -6,15 +6,15 @@ import { useStore } from "../layout/Stores/Store";
 export default observer(function CardItems() {
     const { shopingStore } = useStore();
     const handleDelete = (movieId: any) => {
-        // Implement your logic to delete the item based on the movieId
+       
     };
 
     const handleIncreaseAmount = (movieId: any) => {
-        // Implement your logic to increase the amount of the item based on the movieId
+       
     };
 
     const handleDecreaseAmount = (movieId: any) => {
-        // Implement your logic to decrease the amount of the item based on the movieId
+       
     };
 
 
