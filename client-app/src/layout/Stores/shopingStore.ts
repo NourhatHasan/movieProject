@@ -10,6 +10,7 @@ export default class ShopingStore {
     CardItems: CardItems[] = [];
     loading: boolean = false;
     movieStore: MovieStore;
+    itemLoading: boolean = false;
 
     constructor(movieStore: MovieStore) {
         this.movieStore = movieStore;
@@ -50,6 +51,28 @@ export default class ShopingStore {
             })
 
         }
+
+    }
+
+
+    loadCardMovies = async () => {
+        this.itemLoading = true;
+        try {
+            const items = await agent.card.CartItems();
+
+            runInAction(() => {
+                this.CardItems = items;
+                this.itemLoading = false;
+            })
+        }
+        catch (error) {
+            runInAction(() => {
+                this.itemLoading = false;
+                console.log(error);
+            })
+
+        }
+
 
     }
 }

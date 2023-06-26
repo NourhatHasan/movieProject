@@ -1,14 +1,23 @@
 import { observer } from "mobx-react-lite";
+import { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Button, Container, Menu, Dropdown, Icon } from "semantic-ui-react";
+import { Button, Container, Menu, Dropdown, Icon, Label } from "semantic-ui-react";
+import ShopingStore from "./Stores/shopingStore";
 import { useStore } from "./Stores/Store";
 
 
 
 
-export default observer( function Navbar() {
+export default observer(function Navbar() {
 
-    const { userStore } = useStore();
+    
+
+    const { userStore, shopingStore } = useStore();
+
+    useEffect(() => {
+        shopingStore.loadCardMovies();
+    }, [shopingStore]);
+
     return (
         <Menu inverted fixed='top' >
             <Container >
@@ -30,10 +39,6 @@ export default observer( function Navbar() {
                         <Button
                             content="add movie"
                             color='blue'
-
-
-
-
                         />
 
                     </Menu.Item>
@@ -58,15 +63,24 @@ export default observer( function Navbar() {
                    
                   
                 </Menu.Item>
+
                 {userStore.user?.username !== 'Solin' && (
-                    <Menu.Item>
-                        <Icon name="shopping bag" style={{ marginRight: '10px' }} />
+                    <Menu.Item style={{ marginTop: '10px' }} >
+                        <Button color={shopingStore.CardItems.length > 0 ? 'blue' : undefined}>
+                            <Icon name="shopping bag" style={{ marginRight: '10px' }} />
+                            {shopingStore.CardItems.length > 0 && (
+                                <Label circular color="red" size="tiny" floating>
+                                    {shopingStore.CardItems.length}
+                                </Label>
+                            )}
+                        </Button>
                     </Menu.Item>
+                 
                 )}
             </Container>
 
 
         </Menu>
     )
-}
-)
+}    
+)   
