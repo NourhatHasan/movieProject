@@ -1,26 +1,34 @@
-import React, { useEffect } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Icon, List} from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
+import Navbar from "../layout/Navbar";
 
 export default observer(function CardItems() {
     const { shopingStore } = useStore();
-    const handleDelete = (movieId: any) => {
-       
+    const [delteTarget, SetDeleteTarget] = useState<number>(0);
+
+
+
+    const handleDelete = (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => { 
+        SetDeleteTarget(movieId);
+        shopingStore.deleteMovie(movieId);
+        
     };
 
-    const handleIncreaseAmount = (movieId: any) => {
-       
+    const handleIncreaseAmount = (movieId: number) => {
+        shopingStore.updatemovie(movieId,)
     };
 
-    const handleDecreaseAmount = (movieId: any) => {
-       
+    const handleDecreaseAmount = (movieId: number) => {
+        
     };
 
-
+    
     useEffect(() => {
         shopingStore.loadCardMovies();
     }, [shopingStore]);
+
 
   
 
@@ -39,14 +47,19 @@ export default observer(function CardItems() {
 
                             <span className="item-quantity">{movie.mengde}</span>
 
-                            <Button icon onClick={() => handleIncreaseAmount(movie.movieId)}>
+                            <Button icon
+                                onClick={() => handleIncreaseAmount(movie.movieId)}
+                                loading={shopingStore.updateLoading}
+                            >
                                 <Icon name="plus" />
                             </Button>
 
                             <Button
+                                name={movie.movieId}
                                 icon
                                 color="red"
-                                onClick={() => handleDelete(movie.movieId)}
+                                onClick={(e) => handleDelete(e, movie.movieId)}
+                                loading={shopingStore.deleteLoading && delteTarget === movie.movieId}
                             >
                                 <Icon name="trash" />
                             </Button>

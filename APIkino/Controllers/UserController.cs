@@ -191,12 +191,14 @@ namespace APIkino.Controllers
                     return NotFound("feil i shoping");
                 }
 
-                var movie = await this.repository.Geten(cartItem.Id);
+                var movie = await this.repository.Geten(cartItem.MovieId); 
                 if (movie == null)
                 {
                     _logger.LogError("the Delete call to /api/user fieled");
                     return NotFound(" feil i movie");
                 }
+                movie.mengde = movie.mengde+cartItem.mengde;
+                await context.SaveChangesAsync();
                 var cartItemDto = cartItem.convertionDTO(movie);
                 return Ok(cartItemDto);
             }
@@ -209,7 +211,9 @@ namespace APIkino.Controllers
 
             }
         }
-        [HttpPatch("{id:int}")]
+
+
+        [HttpPut("{id:int}")]
         [AllowAnonymous]
         public async Task<ActionResult<CartItemDTO>> UpdateItem(int Id, CartItemMengdeUpdate cartUpdate)
         {

@@ -1,6 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { Card } from "semantic-ui-react";
 import { CardItem, CardItems } from "../../Models/CardItems";
 import { CardItemToAdd } from "../../Models/CardItemToAdd";
+import { Movies } from "../../Models/Movies";
 
 import agent from "../api/agent";
 import MovieStore from "./MovieStore";
@@ -11,6 +13,8 @@ export default class ShopingStore {
     loading: boolean = false;
     movieStore: MovieStore;
     itemLoading: boolean = false;
+    deleteLoading: boolean = false;
+    updateLoading: boolean = false;
 
     constructor(movieStore: MovieStore) {
         this.movieStore = movieStore;
@@ -82,6 +86,52 @@ export default class ShopingStore {
 
         }
 
+
+    }
+
+    deleteMovie = async (id: number) => {
+        this.deleteLoading = true;
+        try {
+            await agent.card.deleteItem(id);
+            var movie = await this.movies.find(x => x.id === id);
+            this.loadCardMovies();
+            runInAction(() => {
+                this.CardItems = this.CardItems.filter(x => x.movieId !== id);
+                this.loadCardMovies();
+                this.movieStore.addMenegde(movie!, movie!.mengde);
+                this.deleteLoading = false;
+            })
+
+        } catch (error) {
+            runInAction(() => {
+                this.deleteLoading = false;
+                console.log(error);
+            })
+        }
+    }
+
+    updatemovie = async (id: number) => {
+        this.updateLoading = true;
+        try {
+             var movie = this.movies.find(x => x.id === id);
+            await agent.card.updateMenegde(id, movie!);
+            this.loadCardMovies();
+            runInAction(() => {
+               
+                var item = this.CardItems.find(x => x.movieId === movie!.id);
+                item!.mengde += 1;
+                this.loadCardMovies();
+                this.movieStore.updateMenegde(movie!, movie!.id);
+               
+            })
+            this.updateLoading = false;
+        }
+        catch (error) {
+            runInAction(() => {
+                this.updateLoading = false;
+                console.log(error);
+            })
+        }
 
     }
 }

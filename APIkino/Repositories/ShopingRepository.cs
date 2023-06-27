@@ -191,9 +191,11 @@ namespace APIkino.Repositories
         }
 
 
-        public async Task<CartItem> DeleteItem(int Id)
-        {
-            var item = await this.context.CartItem.FindAsync(Id);
+        public async Task<CartItem> DeleteItem(int movieId)
+            {
+            var user = await GetLoggedInUser();
+            var item = await this.context.CartItem.Where(x=>x.userId == user.Id && x.MovieId == movieId).FirstOrDefaultAsync();
+            //var item = await this.context.CartItem.FindAsync(movieId);
             if (item != null)
             {
                 this.context.CartItem.Remove(item);
@@ -227,10 +229,10 @@ namespace APIkino.Repositories
       
       
 
-        public async Task<CartItem> UpdateItem(int Id, CartItemMengdeUpdate cartItemMengdeUpdate)
+        public async Task<CartItem> UpdateItem(int movieId, CartItemMengdeUpdate cartItemMengdeUpdate)
         {
-            
-            var item = await this.context.CartItem.FindAsync(Id);
+            var user = await GetLoggedInUser();
+            var item = await this.context.CartItem.Where(x => x.userId == user.Id && x.MovieId == movieId).FirstOrDefaultAsync();
             var gammelMengde = item.mengde;
             if (item != null)
             {

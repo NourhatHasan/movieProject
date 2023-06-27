@@ -148,4 +148,20 @@ export default class MovieStore {
             console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
         }
     }
+
+    addMenegde = (movie: Movies, mengde: number) => {
+        if (movie) {
+            movie.mengde = (movie.mengde || 0) + mengde;
+        } else {
+            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+        }
+    }
+
+    updateMenegde = (movie: Movies, mengde: number) => {
+        if (movie) {
+            movie.mengde = (movie.mengde || 0) - 1;
+        } else {
+            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+        }
+    }
 }
