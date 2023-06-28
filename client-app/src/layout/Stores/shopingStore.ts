@@ -32,7 +32,9 @@ export default class ShopingStore {
         this.loading = true;
 
         try {
+            var theMovie = this.movieStore.movies.find(x => x.id === movie.movieId);
             var item = await agent.card.AddItem(movie);
+           
             runInAction( () => {
                 const cardItem = new CardItem(
                     item.userId,
@@ -43,13 +45,17 @@ export default class ShopingStore {
                     item.totalPrice,
                     1 
                 );
+
                 this.CardItems.push(item);
 
-                let theMovie = this.movies.find(x => x.id === item.movieId);
-                console.log(theMovie);
+               
 
-                if (theMovie) {
-                    store.movieStore.changeMenegde(theMovie, item.mengde);
+                if (theMovie?.mengde === 1) {
+                    this.movieStore.movies = this.movieStore.movies.filter(x => x.id !== theMovie?.id);
+                }
+              
+                if (theMovie?.mengde>1) {
+                    store.movieStore.changeMenegde(theMovie!, item.mengde);
 
                 }
                 this.loading = false;
@@ -95,10 +101,12 @@ export default class ShopingStore {
         try {
             await agent.card.deleteItem(id);
             var movie = await this.movies.find(x => x.id === id);
+            
             this.loadCardMovies();
             runInAction(() => {
                var theItem= this.CardItems.find(x => x.movieId === id);
                 this.CardItems = this.CardItems.filter(x => x.movieId !== id);
+
                 this.loadCardMovies();
                 this.movieStore.addMenegde(movie!, theItem!);
                 this.deleteLoading = false;
@@ -113,21 +121,30 @@ export default class ShopingStore {
     }
 
     updatemovie = async (id:number,movie: CardItemMengdeUpdate) => {
+
         const item = this.CardItems.find(x => x.movieId === id);
+        
         if (!item) return;
+        
         this.updateLoading = true;
         try {
            
             var oldMengde = item?.mengde;
             await agent.card.updateMenegde(id, movie!);
-           
+            this.loadCardMovies();
             runInAction(() => {
                 item!.mengde = movie!.mengde;
+               
                  if (item?.mengde === 0) {
                      this.deleteMovie(id)
                      this.CardItems = [];
                      console.log(CardItem.length)
                 }
+
+               
+                this.loadCardMovies();
+
+              
                 this.movieStore.updateMovieMengde(item!.mengde, oldMengde!, item!.movieId)
                
             })

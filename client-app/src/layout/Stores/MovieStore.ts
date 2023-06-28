@@ -19,21 +19,11 @@ export default class MovieStore {
         this.initLoading = true;
         try {
             const themovies = await agent.movies.list();
-            this.movies = themovies.map((movie) => {
-                if (movie.mengde === 0) {
-                    return { ...movie, mengde: "coming soon" };
-                }
-                return movie;
-            });
+           
           
        
             runInAction(() => {
-                this.movies = themovies.map((movie) => {
-                    if (movie.mengde === 0) {
-                        return { ...movie, mengde: "coming soon" };
-                    }
-                    return movie;
-                });
+                this.movies = themovies.filter(movie => movie.mengde !== 0);
                 this.initLoading = false;
             })
         }
@@ -118,7 +108,9 @@ export default class MovieStore {
         this.loading = true;
 
         try {
+           
             await agent.movies.create(movie);
+
             runInAction(() => {
                 this.movies.push(movie);
                 this.selectedMovie = movie;
@@ -158,7 +150,7 @@ export default class MovieStore {
         if (movie) {
             movie.mengde = (movie.mengde || 0) - mengde;
         } else {
-            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+            this.loadMovies();
         }
     }
 
@@ -166,7 +158,7 @@ export default class MovieStore {
         if (movie) {
             movie.mengde = (movie.mengde || 0) + mengde;
         } else {
-            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+            this.loadMovies();
         }
     }
 
@@ -174,18 +166,21 @@ export default class MovieStore {
         if (movie) {
             movie.mengde = (movie.mengde || 0) + item.mengde;
         } else {
-            console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+            this.loadMovies();
         }
     }
     updateMovieMengde = (itemMengde: number, oldMengde: number, id: number) => {
         var movie = this.movies.find(x => x.id === id);
         if (itemMengde < oldMengde) {
+           
             var newMengde = oldMengde - itemMengde;
             this.increaseMenegde(movie!, newMengde)
+            
 
         } else {
             var newMengde = itemMengde - oldMengde;
             this.changeMenegde(movie!, newMengde);
+            
         }
     }
 }

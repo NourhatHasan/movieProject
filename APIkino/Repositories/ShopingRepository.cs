@@ -57,7 +57,7 @@ namespace APIkino.Repositories
                 
                 var Item = await (from movie in this.context.movies
                                   where cartItemToAddDto.MovieId == movie.Id
-                                  && cartItemToAddDto.mengde< movie.mengde
+                                  && cartItemToAddDto.mengde<= movie.mengde
                                 select new CartItem
                                    {
 
