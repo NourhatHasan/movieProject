@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Card } from "semantic-ui-react";
+import { CardItemMengdeUpdate } from "../../Models/CardItemMengdeUpdate";
 import { CardItem, CardItems } from "../../Models/CardItems";
 import { CardItemToAdd } from "../../Models/CardItemToAdd";
 import { Movies } from "../../Models/Movies";
@@ -9,7 +10,7 @@ import MovieStore from "./MovieStore";
 import { store } from "./Store";
 
 export default class ShopingStore {
-    CardItems: CardItems[] = [];
+    CardItems: CardItems[]  = [];
     loading: boolean = false;
     movieStore: MovieStore;
     itemLoading: boolean = false;
@@ -96,9 +97,10 @@ export default class ShopingStore {
             var movie = await this.movies.find(x => x.id === id);
             this.loadCardMovies();
             runInAction(() => {
+               var theItem= this.CardItems.find(x => x.movieId === id);
                 this.CardItems = this.CardItems.filter(x => x.movieId !== id);
                 this.loadCardMovies();
-                this.movieStore.addMenegde(movie!, movie!.mengde);
+                this.movieStore.addMenegde(movie!, theItem!);
                 this.deleteLoading = false;
             })
 
@@ -110,20 +112,26 @@ export default class ShopingStore {
         }
     }
 
-    updatemovie = async (id: number) => {
+    updatemovie = async (id:number,movie: CardItemMengdeUpdate) => {
+        const item = this.CardItems.find(x => x.movieId === id);
+        if (!item) return;
         this.updateLoading = true;
         try {
-             var movie = this.movies.find(x => x.id === id);
+           
+            var oldMengde = item?.mengde;
             await agent.card.updateMenegde(id, movie!);
-            this.loadCardMovies();
+           
             runInAction(() => {
-               
-                var item = this.CardItems.find(x => x.movieId === movie!.id);
-                item!.mengde += 1;
-                this.loadCardMovies();
-                this.movieStore.updateMenegde(movie!, movie!.id);
+                item!.mengde = movie!.mengde;
+                 if (item?.mengde === 0) {
+                     this.deleteMovie(id)
+                     this.CardItems = [];
+                     console.log(CardItem.length)
+                }
+                this.movieStore.updateMovieMengde(item!.mengde, oldMengde!, item!.movieId)
                
             })
+        
             this.updateLoading = false;
         }
         catch (error) {
@@ -135,3 +143,6 @@ export default class ShopingStore {
 
     }
 }
+
+
+  

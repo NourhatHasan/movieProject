@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { CardItem, CardItems } from "../../Models/CardItems";
 import { Movies } from "../../Models/Movies";
 import agent from "../api/agent";
 
@@ -149,7 +150,7 @@ export default class MovieStore {
         }
     }
 
-    addMenegde = (movie: Movies, mengde: number) => {
+    increaseMenegde = (movie: Movies, mengde: number) => {
         if (movie) {
             movie.mengde = (movie.mengde || 0) + mengde;
         } else {
@@ -157,11 +158,22 @@ export default class MovieStore {
         }
     }
 
-    updateMenegde = (movie: Movies, mengde: number) => {
+    addMenegde = (movie: Movies,  item: CardItems) => {
         if (movie) {
-            movie.mengde = (movie.mengde || 0) - 1;
+            movie.mengde = (movie.mengde || 0) + item.mengde;
         } else {
             console.error("Cannot update 'mengde'. 'selectedMovie' is null or undefined.");
+        }
+    }
+    updateMovieMengde = (itemMengde: number, oldMengde: number, id: number) => {
+        var movie = this.movies.find(x => x.id === id);
+        if (itemMengde < oldMengde) {
+            var newMengde = oldMengde - itemMengde;
+            this.increaseMenegde(movie!, newMengde)
+
+        } else {
+            var newMengde = itemMengde - oldMengde;
+            this.changeMenegde(movie!, newMengde);
         }
     }
 }

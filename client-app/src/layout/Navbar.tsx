@@ -68,22 +68,31 @@ export default observer(function Navbar() {
                   
                 </Menu.Item>
 
-                {userStore.user?.username !== 'Solin' && (
+                {userStore.user?.username !== 'Solin'   && (
                     <Menu.Item style={{ marginTop: '10px' }} >
-                        <Popup
-                            hoverable
-                            trigger={
-                                <Button color="blue" icon>
-                                    <Icon name="shopping bag" style={{ marginRight: "10px" }} />
-                                    {shopingStore.CardItems.length > 0 && (
-                                        <Label circular color="red" size="tiny" floating>
-                                            {shopingStore.CardItems.length}
-                                        </Label>
-                                    )}
-                                </Button>
-                            }
-                            content=<CardItems />
+                        {shopingStore.CardItems.length === 0 ? (
+                            <Button color="grey" icon>
+                                <Icon name="shopping bag" style={{ marginRight: "10px" }} />
+                            </Button>
+                        ):(
+                       
+                            <Popup
+                                hoverable
+                                trigger={
+                                    <Button color="blue" icon>
+                                        <Icon name="shopping bag" style={{ marginRight: "10px" }} />
+                                        {shopingStore.CardItems.length > 0 && (
+                                            <Label circular color="red" size="tiny" floating>
+                                                {shopingStore.CardItems.length}
+                                            </Label>
+                                        )}
+                                    </Button>
+                                }
+                                content=<CardItems />
                             />
+                        )}
+                   
+                           
                     </Menu.Item>
                  
                 )}

@@ -3,10 +3,12 @@ import { observer } from "mobx-react-lite";
 import { Button, Icon, List} from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import Navbar from "../layout/Navbar";
+import { CardItemMengdeUpdate } from "../Models/CardItemMengdeUpdate";
 
 export default observer(function CardItems() {
     const { shopingStore } = useStore();
     const [delteTarget, SetDeleteTarget] = useState<number>(0);
+    const [loadingMap, setLoadingMap] = useState<{ [key: number]: boolean }>({});
 
 
 
@@ -16,15 +18,49 @@ export default observer(function CardItems() {
         
     };
 
-    const handleIncreaseAmount = (movieId: number) => {
-        shopingStore.updatemovie(movieId,)
+   const handleIncreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => {
+  setLoadingMap((prevLoadingMap) => ({
+    ...prevLoadingMap,
+    [movieId]: true,
+  }));
+
+  const movie = shopingStore.CardItems.find((x) => x.movieId === movieId);
+  const updateMengde = movie!.mengde + 1;
+  const cardItemMengdeUpdate: CardItemMengdeUpdate = {
+    mengde: updateMengde,
+  };
+
+  await shopingStore.updatemovie(movieId, cardItemMengdeUpdate);
+
+  setLoadingMap((prevLoadingMap) => ({
+    ...prevLoadingMap,
+    [movieId]: false,
+  }));
+};
+
+const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => {
+  setLoadingMap((prevLoadingMap) => ({
+    ...prevLoadingMap,
+    [movieId]: true,
+  }));
+
+  const movie = shopingStore.CardItems.find((x) => x.movieId === movieId);
+  const updatedMengde = movie!.mengde - 1;
+
+  if (updatedMengde >= 0) {
+    const cardItemMengdeUpdate: CardItemMengdeUpdate = {
+      mengde: updatedMengde,
     };
 
-    const handleDecreaseAmount = (movieId: number) => {
-        
-    };
+    await shopingStore.updatemovie(movieId, cardItemMengdeUpdate);
+  }
 
-    
+  setLoadingMap((prevLoadingMap) => ({
+    ...prevLoadingMap,
+    [movieId]: false,
+  }));
+};
+
     useEffect(() => {
         shopingStore.loadCardMovies();
     }, [shopingStore]);
@@ -41,15 +77,18 @@ export default observer(function CardItems() {
                             {movie.movieName}
                         </List.Content>
                         <List.Content floated="right">
-                            <Button icon onClick={() => handleDecreaseAmount(movie.movieId)}>
+                            <Button icon
+                                onClick={(e) => handleDecreaseAmount(e, movie.movieId)}
+                                loading={loadingMap[movie.movieId]}
+                            >
                                 <Icon name="minus" />
                             </Button>
 
                             <span className="item-quantity">{movie.mengde}</span>
 
                             <Button icon
-                                onClick={() => handleIncreaseAmount(movie.movieId)}
-                                loading={shopingStore.updateLoading}
+                                onClick={(e) => handleIncreaseAmount(e, movie.movieId)}
+                                loading={loadingMap[movie.movieId]}
                             >
                                 <Icon name="plus" />
                             </Button>
