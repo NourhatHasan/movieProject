@@ -19,9 +19,21 @@ export default class MovieStore {
         this.initLoading = true;
         try {
             const themovies = await agent.movies.list();
-
+            this.movies = themovies.map((movie) => {
+                if (movie.mengde === 0) {
+                    return { ...movie, mengde: "coming soon" };
+                }
+                return movie;
+            });
+          
+       
             runInAction(() => {
-                this.movies = themovies;
+                this.movies = themovies.map((movie) => {
+                    if (movie.mengde === 0) {
+                        return { ...movie, mengde: "coming soon" };
+                    }
+                    return movie;
+                });
                 this.initLoading = false;
             })
         }
@@ -142,7 +154,7 @@ export default class MovieStore {
     }
     }
 
-    changeMenegde = (movie: Movies, mengde: number) => {
+    changeMenegde = (movie: Movies, mengde: any) => {
         if (movie) {
             movie.mengde = (movie.mengde || 0) - mengde;
         } else {

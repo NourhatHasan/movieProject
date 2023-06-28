@@ -3,14 +3,14 @@ export interface Movies {
     movieName: string
     description: string
     price: number
-    mengde: number
+    mengde:any
 }
 export class movieForm {
   
     movieName: string = "";
     description: string = "";
     price: number = 0;
-    mengde: number = 0;
+    mengde: any= 0;
 
 
 

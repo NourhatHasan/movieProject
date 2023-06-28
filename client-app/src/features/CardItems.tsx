@@ -6,7 +6,7 @@ import Navbar from "../layout/Navbar";
 import { CardItemMengdeUpdate } from "../Models/CardItemMengdeUpdate";
 
 export default observer(function CardItems() {
-    const { shopingStore } = useStore();
+    const { shopingStore, movieStore } = useStore();
     const [delteTarget, SetDeleteTarget] = useState<number>(0);
     const [loadingMap, setLoadingMap] = useState<{ [key: number]: boolean }>({});
 
@@ -19,18 +19,24 @@ export default observer(function CardItems() {
     };
 
    const handleIncreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => {
-  setLoadingMap((prevLoadingMap) => ({
+    setLoadingMap((prevLoadingMap) => ({
     ...prevLoadingMap,
-    [movieId]: true,
-  }));
+      [movieId]: true,
+     }));
 
-  const movie = shopingStore.CardItems.find((x) => x.movieId === movieId);
-  const updateMengde = movie!.mengde + 1;
-  const cardItemMengdeUpdate: CardItemMengdeUpdate = {
-    mengde: updateMengde,
-  };
+       const movie = shopingStore.CardItems.find((x) => x.movieId === movieId);
+       const dashItem = movieStore.movies.find(x => x.id === movieId);
+       if (dashItem!.mengde > 0) {
+           const updateMengde = movie!.mengde + 1;
+           const cardItemMengdeUpdate: CardItemMengdeUpdate = {
+               mengde: updateMengde,
+           };
+           await shopingStore.updatemovie(movieId, cardItemMengdeUpdate);
+       }
+    
+  
 
-  await shopingStore.updatemovie(movieId, cardItemMengdeUpdate);
+  
 
   setLoadingMap((prevLoadingMap) => ({
     ...prevLoadingMap,
