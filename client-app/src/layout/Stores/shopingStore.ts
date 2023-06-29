@@ -123,6 +123,8 @@ export default class ShopingStore {
     updatemovie = async (id:number,movie: CardItemMengdeUpdate) => {
 
         const item = this.CardItems.find(x => x.movieId === id);
+        const theMovie = this.movies.find(x => x.id === id);
+
         
         if (!item) return;
         
@@ -134,13 +136,14 @@ export default class ShopingStore {
             this.loadCardMovies();
             runInAction(() => {
                 item!.mengde = movie!.mengde;
-               
-                 if (item?.mengde === 0) {
-                     this.deleteMovie(id)
-                     this.CardItems = [];
-                     console.log(CardItem.length)
-                }
 
+                if (theMovie?.mengde===1) {
+                    console.log(theMovie?.mengde);
+                    this.movieStore.movies = this.movieStore.movies.filter(x => x.id !== id)
+                    this.movieStore.loadMovies();
+                    
+                }
+               
                
                 this.loadCardMovies();
 
