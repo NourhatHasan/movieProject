@@ -144,7 +144,11 @@ export default class ShopingStore {
                     
                 }
                
-               
+                if (item.mengde === 0) {
+                    this.deleteMovie(id)
+
+
+                }
                 this.loadCardMovies();
 
               

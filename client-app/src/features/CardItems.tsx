@@ -1,6 +1,6 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Icon, List} from "semantic-ui-react";
+import { Button, Header, Icon, List} from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import Navbar from "../layout/Navbar";
 import { CardItemMengdeUpdate } from "../Models/CardItemMengdeUpdate";
@@ -75,14 +75,19 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
   
 
     return (
-        <div className="card-items-container">
+        <div >
             <List divided relaxed>
                 {shopingStore.CardItems.map((movie) => (
                     <List.Item key={movie.movieId}>
-                        <List.Content floated="left">
+                        <List.Content floated="left" as={Header} style={{ marginTop: '2em' }}>
                             {movie.movieName}
                         </List.Content>
-                        <List.Content floated="right">
+
+                        <List.Content floated="right" style={{ marginTop: '2em' }}>
+                            Price:  {movie.totalPrice}
+                        </List.Content>
+
+                        <List.Content floated="left" style={{ marginTop: '2em' }}>
                             <Button icon
                                 onClick={(e) => handleDecreaseAmount(e, movie.movieId)}
                                 loading={loadingMap[movie.movieId]}
