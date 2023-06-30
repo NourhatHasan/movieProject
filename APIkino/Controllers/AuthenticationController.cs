@@ -112,7 +112,7 @@ public class AuthenticationController : ControllerBase
             //return our token 
             return Ok(new
             {
-
+                Id= dbUser.Id,
                 Username = request.Username,
                 Password = Innpassword,
                 token = new JwtSecurityTokenHandler().WriteToken(token),

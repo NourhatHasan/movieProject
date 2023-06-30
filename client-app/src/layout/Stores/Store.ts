@@ -18,7 +18,7 @@ const movieStore = new MovieStore();
 const userStore = new UserStore();
 const tokenStore = new TokenStore();
 const modalStore = new ModalStore();
-const shopingStore = new ShopingStore(movieStore);
+const shopingStore = new ShopingStore(movieStore, userStore);
 
 export const store: Store = {
     movieStore,

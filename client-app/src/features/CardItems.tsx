@@ -1,16 +1,16 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { Button, Header, Icon, List} from "semantic-ui-react";
+import { Button, Grid, Header, Icon, List} from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
-import Navbar from "../layout/Navbar";
+
 import { CardItemMengdeUpdate } from "../Models/CardItemMengdeUpdate";
+
 
 export default observer(function CardItems() {
     const { shopingStore, movieStore } = useStore();
     const [delteTarget, SetDeleteTarget] = useState<number>(0);
     const [loadingMap, setLoadingMap] = useState<{ [key: number]: boolean }>({});
-
-
+   
 
     const handleDelete = (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => { 
         SetDeleteTarget(movieId);
@@ -18,6 +18,8 @@ export default observer(function CardItems() {
         
     };
 
+
+   
    const handleIncreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieId: number) => {
     setLoadingMap((prevLoadingMap) => ({
     ...prevLoadingMap,
@@ -69,6 +71,7 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
 
     useEffect(() => {
         shopingStore.loadCardMovies();
+        shopingStore.TotalAmount();
     }, [shopingStore]);
 
 
@@ -84,7 +87,7 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
                         </List.Content>
 
                         <List.Content floated="right" style={{ marginTop: '2em' }}>
-                            Price:  {movie.totalPrice}
+                            Price:  {movie.totalPrice} $
                         </List.Content>
 
                         <List.Content floated="left" style={{ marginTop: '2em' }}>
@@ -117,6 +120,14 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
                     </List.Item>
                 ))}
             </List>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <Button fluid color="red" content={"check out"} style={{ marginRight: "auto" }} />
+                <div style={{ marginLeft:'1em' }}>total: {shopingStore.amount} $</div>
+            </div>
+
+                   
+           
+            
         </div>
     );
 });

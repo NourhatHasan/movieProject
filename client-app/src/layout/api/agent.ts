@@ -100,10 +100,16 @@ const card = {
     updateMenegde: (id: number, update: CardItemMengdeUpdate) => requests.put(`/User/${id}`, update)
 }
 
+const payment = {
+    totalAmount: (userId: number) => requests.post<void>(`/Payment/totalAmount?userId=${userId}`, {})
+}
+
+
 const agent = {
     movies,
     user,
     card,
+    payment
 }
 
 export default agent;

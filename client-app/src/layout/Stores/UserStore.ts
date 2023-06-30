@@ -2,12 +2,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { LogInInfo, UserFormValues } from "../../Models/User";
 import { router } from "../../routing/router";
 import agent from "../api/agent";
-import modalStore from "./ModalStore";
 import { store } from "./Store";
 
 export default class UserStore {
     user: LogInInfo | null = null;
-
+    
     constructor() {
         makeAutoObservable(this);
     }
@@ -20,10 +19,11 @@ export default class UserStore {
     login = async (user: UserFormValues) => {
         try {
             const logInuser = await agent.user.logIn(user);
-            console.log(logInuser);
+            console.log(logInuser)
             store.tokenStore.setToken(logInuser.token!);
             runInAction(() => {
                 this.user = logInuser;
+                console.log(user)
                 router.navigate('/movies')
                 store.modalStore.closeModal();
             })
@@ -48,7 +48,8 @@ export default class UserStore {
         try {
             const user = await agent.user.current();
             runInAction(() => {
-                 this.user=user
+                this.user = user
+                
             })
            
         }
