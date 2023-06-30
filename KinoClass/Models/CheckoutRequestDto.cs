@@ -8,7 +8,7 @@ namespace KinoClass.Models
 {
     public class CheckoutRequestDto
     {
-        public int UserId { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
+     
+     public PaymentMethod paymentMethod { get; set; }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using APIkino.Repositories;
+using com.sun.org.apache.xalan.@internal.xsltc.compiler.util;
 using com.sun.xml.@internal.bind.v2.model.core;
 using KinoClass.Models;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace APIkino.Controllers
 {
@@ -21,13 +23,13 @@ namespace APIkino.Controllers
 
         [HttpPost]
         [Route("totalAmount")]
-        public  decimal totalAmount(int userId)
+        public decimal totalAmount(int userId)
         {
-           return _payment.calculateTotalAmount(userId);
+            return _payment.calculateTotalAmount(userId);
         }
 
         [HttpPost]
-        public async  Task<IActionResult> order(int userId)
+        public async Task<IActionResult> order(int userId)
         {
             try
             {
@@ -38,14 +40,14 @@ namespace APIkino.Controllers
             }
             catch (Exception ex)
             {
-              
+
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating order status.");
             }
         }
 
         [HttpDelete]
-        public void clear(int userId) 
-        { 
+        public void clear(int userId)
+        {
             _payment.ClearCart(userId);
         }
 
@@ -54,46 +56,49 @@ namespace APIkino.Controllers
 
         [HttpPost]
         [Route("checkout")]
-        public IActionResult checkout(CheckoutRequestDto checkoutRequest)
+        public IActionResult checkout(int userId, CheckoutRequestDto checkoutRequest)
         {
             try
             {
-                if (checkoutRequest == null) return BadRequest("checkrequest is null");
 
-                if (checkoutRequest.PaymentMethod == null) return BadRequest("payment method is null");
+             
+                if (checkoutRequest == null) return BadRequest("payment method is null");
 
-                var cartItems = _payment.CartItems(checkoutRequest.UserId);
-                var totalAmount = _payment.calculateTotalAmount(checkoutRequest.UserId);
+                var cartItems = _payment.CartItems(userId);
+                var totalAmount = _payment.calculateTotalAmount(userId);
 
                 // Make the payment using the payment gateway
-                var paymentResult = _payment.paymentProcess(checkoutRequest.PaymentMethod, totalAmount);
-
+                var paymentResult = _payment.paymentProcess(checkoutRequest, totalAmount);
+                
 
                 // Handle the payment result
                 if (paymentResult.Success)
                 {
-                    // Perform further actions like updating the order status, generating an invoice, etc.
-                    _payment.UpdateOrderStatus(checkoutRequest.UserId, cartItems);
+                   
+                    _payment.UpdateOrderStatus(userId, cartItems);
 
                     // Clear the user's cart after successful payment
-                    _payment.ClearCart(checkoutRequest.UserId);
+                    _payment.ClearCart(userId);
 
                     return Ok("Payment successful. Order placed.");
                 }
                 else
                 {
-                    // Handle the failed payment scenario
-                    return BadRequest("Payment failed. Please try again.");
+                    string errorMessage = paymentResult.ErrorMessage;
+
+                   
+                    _logger.LogError("Payment failed: {ErrorMessage}", errorMessage);
+
+                   
+                    return BadRequest($"Payment failed: {errorMessage}. Please try again.");
                 }
             }
 
             catch (Exception ex)
             {
-                _logger.LogError(ex, "the checkout call failed");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                   "Error getting data from the database"
-                   );
-
+                _logger.LogError(ex, "Payment processing error: {ErrorMessage}", ex.Message);
+                // Handle the payment error
+                return BadRequest("Payment failed. Please try again.");
             }
         }
 

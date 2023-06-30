@@ -22,8 +22,8 @@ namespace APIkino.Repositories
 
         private async Task<bool> cartItemExsist(int userId, int movieId)
         {
-            return await this.context.CartItem.AnyAsync(c => c.userId ==userId &&
-                                                 c.MovieId == movieId); 
+            return await this.context.CartItem.AnyAsync(c => c.userId == userId &&
+                                                 c.MovieId == movieId);
 
 
         }
@@ -32,7 +32,7 @@ namespace APIkino.Repositories
             var userIdClaim = accessor.HttpContext.User.FindFirst("UserId");
             if (userIdClaim == null)
             {
-              
+
                 throw new Exception("UserId claim is missing");
             }
 
@@ -43,57 +43,57 @@ namespace APIkino.Repositories
 
         public async Task<CartItem> AddItem(CartItemToAddDto cartItemToAddDto)
         {
-            var user =  await GetLoggedInUser();
+            var user = await GetLoggedInUser();
             int userId = user.Id;
-            if(await cartItemExsist(userId, cartItemToAddDto.MovieId) == true)
+            if (await cartItemExsist(userId, cartItemToAddDto.MovieId) == true)
             {
 
                 return null;
             }
-           else
+            else
             {
 
                 // check if the movie exists with link quary
-                
+
                 var Item = await (from movie in this.context.movies
                                   where cartItemToAddDto.MovieId == movie.Id
-                                  && cartItemToAddDto.mengde<= movie.mengde
-                                select new CartItem
-                                   {
+                                  && cartItemToAddDto.mengde <= movie.mengde
+                                  select new CartItem
+                                  {
 
-                                      userId=userId,
+                                      userId = userId,
                                       MovieId = movie.Id,
                                       mengde = 1,
-                                      price=movie.price
-                                     
+                                      price = movie.price
 
 
-                                   }).SingleOrDefaultAsync();
-                if(Item == null) return null;
-                 else
-                 {
+
+                                  }).SingleOrDefaultAsync();
+                if (Item == null) return null;
+                else
+                {
 
                     var movie = await this.context.movies.FindAsync(Item.MovieId);
                     movie.mengde = movie.mengde - Item.mengde;
 
                     //adder to the database
                     var result = await this.context.CartItem.AddAsync(Item);
-                   
+
 
                     await this.context.SaveChangesAsync();
 
 
-                   
+
                     //here we return to the user the entity that has
                     //been added to the cartItem database 
                     return Item;
                 }
-               
+
             }
-           
+
 
         }
-        
+
         public async Task<IEnumerable<CartItem>> CartItems(int UserId)
         {
             var user = await GetLoggedInUser();
@@ -107,7 +107,7 @@ namespace APIkino.Repositories
                               Id = cartItem.Id,
                               MovieId = cartItem.MovieId,
                               mengde = cartItem.mengde,
-                             userId = userId
+                              userId = userId
                           }).ToListAsync();
 
 
@@ -116,24 +116,24 @@ namespace APIkino.Repositories
 
         public decimal calculateTotalAmount(int userId)
         {
-            var totalPrice =  (from cart in context.Cart
-                                    join cartItem in context.CartItem
-                                    on cart.UserId equals cartItem.userId
-                                    where cart.UserId == userId
-                                    select cartItem.mengde * cartItem.price).Sum();
+            var totalPrice = (from cart in context.Cart
+                              join cartItem in context.CartItem
+                              on cart.UserId equals cartItem.userId
+                              where cart.UserId == userId
+                              select cartItem.mengde * cartItem.price).Sum();
 
             return totalPrice;
 
         }
 
-        public PaymentResult paymentProcess([FromBody] KinoClass.Models.PaymentMethod method, decimal amount)
+        public PaymentResult paymentProcess(CheckoutRequestDto method, decimal amount)
         {
             var options = new Stripe.ChargeCreateOptions
 
             {
-                Amount = (long)(amount * 100), // Amount in cents
+                Amount = (long)(amount * 100), 
                 Currency = "usd",
-                Source = method.Token, // Payment token obtained from the client-side
+                Source = method.paymentMethod.Token, // Payment token obtained from the client-side
                 Description = "Movie purchase"
             };
 
@@ -172,7 +172,7 @@ namespace APIkino.Repositories
                     UserId = userId,
                     MovieId = item.MovieId,
                     Mengde = item.mengde,
-                    // Set other order properties as needed
+                   
                     OrderDate = DateTime.Now
                 };
 
@@ -185,16 +185,16 @@ namespace APIkino.Repositories
 
         public void ClearCart(int UserId)
         {
-            var cartItems= context.CartItem.Where(x=>x.userId==UserId).ToList();
+            var cartItems = context.CartItem.Where(x => x.userId == UserId).ToList();
             context.CartItem.RemoveRange(cartItems);
             context.SaveChanges();
         }
 
 
         public async Task<CartItem> DeleteItem(int movieId)
-            {
+        {
             var user = await GetLoggedInUser();
-            var item = await this.context.CartItem.Where(x=>x.userId == user.Id && x.MovieId == movieId).FirstOrDefaultAsync();
+            var item = await this.context.CartItem.Where(x => x.userId == user.Id && x.MovieId == movieId).FirstOrDefaultAsync();
             //var item = await this.context.CartItem.FindAsync(movieId);
             if (item != null)
             {
@@ -208,26 +208,26 @@ namespace APIkino.Repositories
         public async Task<CartItem> GetItem(int id)
         {
             var userId = Convert.ToInt32(accessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-           
-            return await (from 
+
+            return await (from
                            cartItem in this.context.CartItem
-                        
-                         where cartItem.Id == id
+
+                          where cartItem.Id == id
                           select new CartItem
                           {
                               Id = cartItem.Id,
                               MovieId = cartItem.MovieId,
                               mengde = cartItem.mengde,
-                             userId= userId
+                              userId = userId
                           }).SingleOrDefaultAsync();
         }
 
 
-     
 
 
-      
-      
+
+
+
 
         public async Task<CartItem> UpdateItem(int movieId, CartItemMengdeUpdate cartItemMengdeUpdate)
         {
@@ -236,10 +236,10 @@ namespace APIkino.Repositories
             var gammelMengde = item.mengde;
             if (item != null)
             {
-                 item.mengde = cartItemMengdeUpdate.mengde;
+                item.mengde = cartItemMengdeUpdate.mengde;
 
                 var movie = await this.context.movies.FindAsync(item.MovieId);
-                movie.mengde = movie.mengde+gammelMengde - item.mengde;
+                movie.mengde = movie.mengde + gammelMengde - item.mengde;
 
                 await this.context.SaveChangesAsync();
                 return item;
@@ -262,9 +262,9 @@ namespace APIkino.Repositories
             return null;
         }
 
-       
+
 
     }
-   
+
 
 }

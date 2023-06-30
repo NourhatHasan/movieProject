@@ -13,9 +13,9 @@ namespace APIkino.Repositories
         Task<IEnumerable<CartItem>> CartItems(int UserId);
         Task<CartItem> UpdateItem(int Id, CartItemMengdeUpdate cartItemMengdeUpdate);
 
-       decimal calculateTotalAmount(int UserId);
-        PaymentResult paymentProcess(KinoClass.Models.PaymentMethod method, decimal amount);
-       Task UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask);
+        decimal calculateTotalAmount(int UserId);
+        PaymentResult paymentProcess(KinoClass.Models.CheckoutRequestDto method, decimal amount);
+        Task UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask);
         void ClearCart(int UserId);
 
     }

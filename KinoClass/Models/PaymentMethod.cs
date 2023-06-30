@@ -8,7 +8,7 @@ namespace KinoClass.Models
 {
     public class PaymentMethod
     { 
-        public string Token { get; set; } // Payment token obtained from the client-side
+        public string Token { get; set; } 
         public string CardholderName { get; set; } // Name on the payment card
         public string CardNumber { get; set; } // Payment card number
         public string ExpiryMonth { get; set; } // Expiry month of the card

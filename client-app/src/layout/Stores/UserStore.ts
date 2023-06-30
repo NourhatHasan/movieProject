@@ -40,6 +40,7 @@ export default class UserStore {
        //remove the token from local storage
       //  localStorage.removeItem('jwt');
         this.user = null;
+        store.shopingStore.CardItems = [];
         router.navigate('/');
      
     }
