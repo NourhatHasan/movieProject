@@ -3,7 +3,9 @@ import { Card } from "semantic-ui-react";
 import { CardItemMengdeUpdate } from "../../Models/CardItemMengdeUpdate";
 import { CardItem, CardItems } from "../../Models/CardItems";
 import { CardItemToAdd } from "../../Models/CardItemToAdd";
+import { CheckOutForm } from "../../Models/checkOut";
 import { Movies } from "../../Models/Movies";
+import { router } from "../../routing/router";
 
 import agent from "../api/agent";
 import MovieStore from "./MovieStore";
@@ -19,6 +21,8 @@ export default class ShopingStore {
     deleteLoading: boolean = false;
     updateLoading: boolean = false;
     amount: number = 0;
+    order: CardItems[] = [];
+    
 
 
     constructor(movieStore: MovieStore, userStore: UserStore) {
@@ -178,6 +182,73 @@ export default class ShopingStore {
             const total = await agent.payment.totalAmount(this.userStore!.user!.id);
             
             this.amount = Number(total); 
+        } catch (error) {
+            runInAction(() => {
+                console.log(error);
+            });
+        }
+    }
+
+    process = async (values: CheckOutForm): Promise<Boolean> => {
+        try {
+            var amount = this.amount;
+            return await agent.payment.Process(values, this.amount)
+           .then((response:any) => {
+               var isSuccess = response.success === true;
+               if (isSuccess) {
+                   console.log("Process completed successfully");
+                  
+               } else {
+                   console.log("Process failed");
+                   
+               }
+               return isSuccess;
+           })
+        }
+        catch (error) {
+            console.log(error);
+            return false;
+        }
+       
+    }
+
+    updateOrder = () => {
+        var userId = this.userStore!.user!.id;
+        var order = agent.payment.updateOrder(userId);
+        console.log(order)
+    }
+    clearItems = () => {
+        var userId = this.userStore!.user!.id;
+        var clear = agent.payment.clearItems(userId);
+        this.CardItems = [];
+        this.amount = 0;
+    }
+
+    checkOut = async(values: CheckOutForm) => {
+        try {
+            var userId = this.userStore!.user!.id;
+          
+            var amount = this.amount;
+            console.log(amount);
+           
+            this.process(values);
+
+            this.process(values)
+                .then((isSuccessful) => {
+                    if (isSuccessful) {
+                        this.updateOrder();
+                        this.clearItems();
+                    }
+                })
+        
+           runInAction(() => {
+                this.CardItems = [];
+                this.amount = 0;
+               //router.navigate(`/order`);
+                store.modalStore.closeModal();
+            })
+        
+
         } catch (error) {
             runInAction(() => {
                 console.log(error);

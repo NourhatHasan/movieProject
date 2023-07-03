@@ -1,13 +1,15 @@
+/* eslint-disable react/jsx-no-undef */
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Button, Grid, Header, Icon, List} from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 
 import { CardItemMengdeUpdate } from "../Models/CardItemMengdeUpdate";
+import CheckOut from "./CheckOut";
 
 
 export default observer(function CardItems() {
-    const { shopingStore, movieStore } = useStore();
+    const { shopingStore, movieStore, modalStore } = useStore();
     const [delteTarget, SetDeleteTarget] = useState<number>(0);
     const [loadingMap, setLoadingMap] = useState<{ [key: number]: boolean }>({});
    
@@ -121,7 +123,14 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
                 ))}
             </List>
             <div style={{ display: "flex", alignItems: "center" }}>
-                <Button fluid color="red" content={"check out"} style={{ marginRight: "auto" }} />
+                <Button
+                    fluid
+                    color="red"
+                    content={"check out"}
+                    style={{ marginRight: "auto" }}
+                    onClick={() => modalStore.openModal(<CheckOut/>)}
+                    size="huge" inverted
+                />
                 <div style={{ marginLeft:'1em' }}>total: {shopingStore.amount} $</div>
             </div>
 

@@ -66,7 +66,7 @@ export default observer(function RegisterForm() {
                             loading={isSubmitting}
                           disabled={isSubmitting || !dirty || !isValid}
                         >
-                            Log in
+                            Register
                         </Button>
                     </Form>
 

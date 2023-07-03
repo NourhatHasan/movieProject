@@ -1,4 +1,5 @@
-﻿using APIkino.Repositories;
+﻿using APIkino.Migrations;
+using APIkino.Repositories;
 using com.sun.org.apache.xalan.@internal.xsltc.compiler.util;
 using com.sun.xml.@internal.bind.v2.model.core;
 using KinoClass.Models;
@@ -28,34 +29,51 @@ namespace APIkino.Controllers
             return _payment.calculateTotalAmount(userId);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> order(int userId)
-        {
-            try
-            {
-                var cartItems = _payment.CartItems(userId);
-                await _payment.UpdateOrderStatus(userId, cartItems);
-
-                return Ok("Order status updated successfully.");
-            }
-            catch (Exception ex)
-            {
-
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating order status.");
-            }
-        }
-
+        
         [HttpDelete]
         public void clear(int userId)
         {
             _payment.ClearCart(userId);
         }
 
+        [HttpPost]
+        [Route("Process")]
+        public IActionResult process( CheckoutRequestDto checkoutRequest, decimal totalAmount)
+        {
+            try
+            {
+                var paymentResult = _payment.paymentProcess(checkoutRequest, totalAmount);
 
+                return Ok(paymentResult);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Process  error: {ErrorMessage}", ex.Message);
+                
+                return BadRequest("Process failed1" + ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("updateOrder/{userId}")]
+        public async Task<ActionResult<IEnumerable<Order>>> UpdateOrder(int userId)
+        {
+            try
+            {
+                var items = _payment.CartItems(userId);
+                var order = await _payment.UpdateOrderStatus(userId, items);
+                return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Process error: {ErrorMessage}", ex.Message);
+                return BadRequest( "updateOrder failed"+ ex.Message);
+            }
+        }
 
 
         [HttpPost]
-        [Route("checkout")]
+        [Route("checkout/{userId}")]
         public IActionResult checkout(int userId, CheckoutRequestDto checkoutRequest)
         {
             try
@@ -98,8 +116,39 @@ namespace APIkino.Controllers
             {
                 _logger.LogError(ex, "Payment processing error: {ErrorMessage}", ex.Message);
                 // Handle the payment error
-                return BadRequest("Payment failed. Please try again.");
+                return BadRequest("Payment failed1"+ ex.Message);
             }
+        }
+
+
+        [HttpGet("GetOrders")]
+
+        public async Task<ActionResult<IEnumerable<orders>>>Orders()
+        {
+            try
+            {
+
+
+                var Orders = await _payment.orders();
+
+
+                if (Orders == null)
+                {
+                    throw new Exception("No Orders exist in the system");
+                }
+
+
+                return Ok(Orders);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "the GET call to Orders fieled");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ex.Message);
+
+            }
+
+
         }
 
     }

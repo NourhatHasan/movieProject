@@ -2,6 +2,7 @@
 using KinoClass.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Bcpg;
 using Stripe;
 
 using System.Security.Claims;
@@ -114,6 +115,16 @@ namespace APIkino.Repositories
 
         }
 
+        public async Task<IEnumerable<Order>> orders()
+        {
+            var user = await GetLoggedInUser();
+            var userId = user.Id;
+            var orders = await context.Order
+          .Where(o => o.UserId == userId)
+          .ToListAsync();
+
+            return orders;
+        }
         public decimal calculateTotalAmount(int userId)
         {
             var totalPrice = (from cart in context.Cart
@@ -133,7 +144,7 @@ namespace APIkino.Repositories
             {
                 Amount = (long)(amount * 100), 
                 Currency = "usd",
-                Source = method.paymentMethod.Token, // Payment token obtained from the client-side
+                Source = method.Token, // Payment token obtained from the client-side
                 Description = "Movie purchase"
             };
 
@@ -161,10 +172,10 @@ namespace APIkino.Repositories
             }
         }
 
-        public async Task UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask)
+        public async Task<List<Order>> UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask)
         {
             var cartItems = await cartItemsTask;
-
+            var orders= new List<Order>();
             foreach (var item in cartItems)
             {
                 var order = new Order
@@ -175,11 +186,17 @@ namespace APIkino.Repositories
                    
                     OrderDate = DateTime.Now
                 };
+                orders.Add(order);
 
                 context.Order.Add(order);
-            }
+             
 
+            }
             context.SaveChanges();
+
+            return orders;
+
+
         }
 
 
@@ -243,21 +260,7 @@ namespace APIkino.Repositories
 
                 await this.context.SaveChangesAsync();
                 return item;
-                /*
-               await (from movie in this.context.movies
-                                where cartItemMengdeUpdate.movieId == movie.Id
-                                && cartItemMengdeUpdate.mengde < movie.mengde
-                                select new CartItem
-                                {
-
-
-                                    MovieId = movie.Id,
-                                    mengde = cartItemMengdeUpdate.mengde,
-
-                                }).SingleOrDefaultAsync();
-              await this.context.SaveChangesAsync();
-              await this.context.SaveChangesAsync();
-              */
+             
             }
             return null;
         }

@@ -23,6 +23,7 @@ export const routs: RouteObject[] = [
             { path: '/logIn', element: <LogIn /> },
             { path: '/register', element: <Register /> },
             { path: '/CardItems', element: <CardItems /> },
+            { path: '/order', element: <CardItems /> },
            
            { path: 'notFound', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='/NotFound' /> }

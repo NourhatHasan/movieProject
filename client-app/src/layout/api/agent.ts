@@ -1,8 +1,10 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
+import { request } from 'http';
 import { toast } from 'react-toastify';
 import { CardItemMengdeUpdate } from '../../Models/CardItemMengdeUpdate';
 import { CardItems } from '../../Models/CardItems';
 import { CardItemToAdd } from '../../Models/CardItemToAdd';
+import { CheckOutForm } from '../../Models/checkOut';
 import { Movies } from '../../Models/Movies';
 import { LogInInfo, UserFormValues } from '../../Models/User';
 import { router } from '../../routing/router';
@@ -101,7 +103,11 @@ const card = {
 }
 
 const payment = {
-    totalAmount: (userId: number) => requests.post<void>(`/Payment/totalAmount?userId=${userId}`, {})
+    totalAmount: (userId: number) => requests.post<void>(`/Payment/totalAmount?userId=${userId}`, {}),
+    Process: (values: CheckOutForm, totalAmount: number) => requests.post(`/Payment/Process?totalAmount=${totalAmount}`,values),
+    checkOut: (userId: number, values: CheckOutForm) => requests.post(`/Payment/checkout/${userId}`, values),
+    updateOrder: (userId: number) => requests.post(`/Payment/updateOrder/${userId}`, {}),
+    clearItems: (userId: number) => requests.delete(`/Payment?userId=${userId}`)
 }
 
 

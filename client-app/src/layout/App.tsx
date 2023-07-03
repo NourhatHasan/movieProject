@@ -8,6 +8,7 @@ import { useStore } from './Stores/Store';
 import { useEffect } from 'react';
 import Loading from './loading';
 import ModalCOntainer from '../features/Modals/ModalCOntainer';
+import Payment from '../features/CheckOut';
 
 function App() {
     const location = useLocation();
@@ -32,6 +33,7 @@ function App() {
                     <Navbar />
                     <Container >
                         <Outlet />
+                       
                     </Container>
                 </>
             )}
