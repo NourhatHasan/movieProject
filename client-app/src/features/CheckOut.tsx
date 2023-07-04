@@ -50,72 +50,85 @@ export default observer(function CheckOut() {
 
 
     return (
-        <div style={{ marginTop: "5em" }} >
+        <div style={{ marginTop: "5em" }}>
             <Formik
                 initialValues={initialValues}
                 validationSchema={validation}
-
                 onSubmit={handleSubmit}
             >
                 {({ handleSubmit, isSubmitting, dirty, isValid }) => (
-                    <Form
-                        onSubmit={handleSubmit}
-                        className='ui form'
-                    >
-
+                    <Form onSubmit={handleSubmit} className="ui form">
                         <Form.Field>
-                            <label>cardholderName</label>
-                            <Field type='text' name='cardholderName' placeholder='cardholderName' />
+                            <label>Cardholder Name</label>
+                            <Field type="text" name="cardholderName" placeholder="Cardholder Name" />
                             <ErrorMessage name="cardholderName" component={ErrorMessageComponent as React.ComponentType<any>} />
-
                         </Form.Field>
 
-
                         <Form.Field>
-                            <label>cardNumber</label>
-                            <Field type='text' name='cardNumber' placeholder='cardNumber' />
+                            <label>Card Number</label>
+                            <Field type="text" name="cardNumber" placeholder="Card Number" />
                             <ErrorMessage name="cardNumber" component={ErrorMessageComponent as React.ComponentType<any>} />
-
                         </Form.Field>
 
                         <Form.Field>
-                            <label>expiryMonth</label>
-                            <Field type='text' name='expiryMonth' placeholder='expiryMonth' />
-                            <ErrorMessage name="expiryMonth" component={ErrorMessageComponent as React.ComponentType<any>} />
-
+                            <label>Expiration Date</label>
+                       
+                        <div className="expiration-date-container">
+                          
+                            <div className="expiration-date-fields">
+                                <div className="field">
+                                    <Field as="select" name="expiryMonth" placeholder="Expiration Month">
+                                        <option value="" disabled>Month</option>
+                                            <option value="01">01</option>
+                                            <option value="02">02</option>
+                                            <option value="03">03</option>
+                                            <option value="04">04</option>
+                                            <option value="05">05</option>
+                                            <option value="06">06</option>
+                                            <option value="07">07</option>
+                                            <option value="08">08</option>
+                                            <option value="09">09</option>
+                                            <option value="10">10</option>
+                                            <option value="11">11</option>
+                                            <option value="12">12</option>
+                                        
+                                    </Field>
+                                </div>
+                                <div className="field">
+                                    <Field as="select" name="expiryYear" placeholder="Expiration Year">
+                                        <option value="" disabled>Year</option>
+                                            <option value="2022">2022</option>
+                                            <option value="2023">2023</option>
+                                            <option value="2024">2024</option>
+                                            <option value="2025">2025</option>
+                                       
+                                    </Field>
+                                </div>
+                            </div>
+                            <div className="error-message">
+                                <ErrorMessage name="expiryMonth" component={ErrorMessageComponent as React.ComponentType<any>} />
+                                <ErrorMessage name="expiryYear" component={ErrorMessageComponent as React.ComponentType<any>} />
+                            </div>
+                        </div>
                         </Form.Field>
 
 
                         <Form.Field>
-                            <label>expiryYear</label>
-                            <Field type='text' name='expiryYear' placeholder='expiryYear' />
-                            <ErrorMessage name="expiryYear" component={ErrorMessageComponent as React.ComponentType<any>} />
-
-                        </Form.Field>
-
-
-                        <Form.Field>
-                            <label>cvv</label>
-                            <Field type='text' name='cvv' placeholder='cvv' />
+                            <label>CVV</label>
+                            <Field type="text" name="cvv" placeholder="CVV" />
                             <ErrorMessage name="cvv" component={ErrorMessageComponent as React.ComponentType<any>} />
-
                         </Form.Field>
-
-
-
-
 
                         <Button
-                            type='submit'
+                            type="submit"
                             positive
                             fluid
                             loading={isSubmitting}
                             disabled={isSubmitting || !dirty || !isValid}
                         >
-                            checkOut
+                            Check Out
                         </Button>
                     </Form>
-
                 )}
             </Formik>
         </div>
