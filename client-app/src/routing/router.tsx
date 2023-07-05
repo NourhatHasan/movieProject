@@ -6,6 +6,7 @@ import Home from "../features/Home"
 import ItemDetails from "../features/ItemDetails"
 import NotFound from "../features/NotFound"
 import LogIn from "../features/Users/LogIn"
+import Profile from "../features/Users/Profile"
 import Register from "../features/Users/Register"
 import App from "../layout/App"
 
@@ -24,6 +25,7 @@ export const routs: RouteObject[] = [
             { path: '/register', element: <Register /> },
             { path: '/CardItems', element: <CardItems /> },
             { path: '/order', element: <CardItems /> },
+            { path: '/Profile', element: <Profile /> },
            
            { path: 'notFound', element: <NotFound /> },
             { path: '*', element: <Navigate replace to='/NotFound' /> }

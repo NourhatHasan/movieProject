@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIkino.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230615095952_orders")]
-    partial class orders
+    [Migration("20230705091301_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,11 +99,19 @@ namespace APIkino.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Des")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Mengde")
                         .HasColumnType("int");
 
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
+
+                    b.Property<string>("MovieName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");

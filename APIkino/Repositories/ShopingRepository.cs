@@ -175,13 +175,17 @@ namespace APIkino.Repositories
         public async Task<List<Order>> UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask)
         {
             var cartItems = await cartItemsTask;
+
             var orders= new List<Order>();
             foreach (var item in cartItems)
             {
+                var movie= context.movies.FirstOrDefault(z=>z.Id == item.MovieId);
                 var order = new Order
                 {
                     UserId = userId,
                     MovieId = item.MovieId,
+                    MovieName= movie.MovieName,
+                    Des=movie.description,
                     Mengde = item.mengde,
                    
                     OrderDate = DateTime.Now

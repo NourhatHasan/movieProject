@@ -5,6 +5,7 @@ import { CardItem, CardItems } from "../../Models/CardItems";
 import { CardItemToAdd } from "../../Models/CardItemToAdd";
 import { CheckOutForm } from "../../Models/checkOut";
 import { Movies } from "../../Models/Movies";
+import { Order } from "../../Models/Orders";
 import { router } from "../../routing/router";
 
 import agent from "../api/agent";
@@ -21,8 +22,9 @@ export default class ShopingStore {
     deleteLoading: boolean = false;
     updateLoading: boolean = false;
     amount: number = 0;
-    order: CardItems[] = [];
-    
+    order: Order[] = [];
+    orderLoading: boolean = false;
+
 
 
     constructor(movieStore: MovieStore, userStore: UserStore) {
@@ -156,7 +158,7 @@ export default class ShopingStore {
 
                 if (item.mengde === 0) {
                     this.deleteMovie(id)
-                    
+
 
                 }
                 this.loadCardMovies();
@@ -180,8 +182,8 @@ export default class ShopingStore {
     TotalAmount = async () => {
         try {
             const total = await agent.payment.totalAmount(this.userStore!.user!.id);
-            
-            this.amount = Number(total); 
+
+            this.amount = Number(total);
         } catch (error) {
             runInAction(() => {
                 console.log(error);
@@ -193,23 +195,23 @@ export default class ShopingStore {
         try {
             var amount = this.amount;
             return await agent.payment.Process(values, this.amount)
-           .then((response:any) => {
-               var isSuccess = response.success === true;
-               if (isSuccess) {
-                   console.log("Process completed successfully");
-                  
-               } else {
-                   console.log("Process failed");
-                   
-               }
-               return isSuccess;
-           })
+                .then((response: any) => {
+                    var isSuccess = response.success === true;
+                    if (isSuccess) {
+                        console.log("Process completed successfully");
+
+                    } else {
+                        console.log("Process failed");
+
+                    }
+                    return isSuccess;
+                })
         }
         catch (error) {
             console.log(error);
             return false;
         }
-       
+
     }
 
     updateOrder = () => {
@@ -224,13 +226,13 @@ export default class ShopingStore {
         this.amount = 0;
     }
 
-    checkOut = async(values: CheckOutForm) => {
+    checkOut = async (values: CheckOutForm) => {
         try {
             var userId = this.userStore!.user!.id;
-          
+
             var amount = this.amount;
             console.log(amount);
-           
+
             this.process(values);
 
             this.process(values)
@@ -240,14 +242,14 @@ export default class ShopingStore {
                         this.clearItems();
                     }
                 })
-        
-           runInAction(() => {
+
+            runInAction(() => {
                 this.CardItems = [];
                 this.amount = 0;
-               //router.navigate(`/order`);
+                //router.navigate(`/order`);
                 store.modalStore.closeModal();
             })
-        
+
 
         } catch (error) {
             runInAction(() => {
@@ -255,6 +257,25 @@ export default class ShopingStore {
             });
         }
     }
-}
 
-  
+    getOrders = async () => {
+        this.orderLoading = true;
+        try {
+            const orders = await agent.payment.getOrders();
+
+            runInAction(() => {
+                this.order = orders;
+                console.log(orders.map((item) => item.movieName));
+                this.orderLoading = false;
+            })
+
+        }
+        catch (error) {
+            runInAction(() => {
+                this.orderLoading = false;
+                console.log(error);
+            });
+        }
+    }
+
+}

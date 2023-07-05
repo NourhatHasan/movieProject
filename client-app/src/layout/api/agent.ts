@@ -6,6 +6,7 @@ import { CardItems } from '../../Models/CardItems';
 import { CardItemToAdd } from '../../Models/CardItemToAdd';
 import { CheckOutForm } from '../../Models/checkOut';
 import { Movies } from '../../Models/Movies';
+import { Order } from '../../Models/Orders';
 import { LogInInfo, UserFormValues } from '../../Models/User';
 import { router } from '../../routing/router';
 import { store } from '../Stores/Store';
@@ -107,7 +108,8 @@ const payment = {
     Process: (values: CheckOutForm, totalAmount: number) => requests.post(`/Payment/Process?totalAmount=${totalAmount}`,values),
     checkOut: (userId: number, values: CheckOutForm) => requests.post(`/Payment/checkout/${userId}`, values),
     updateOrder: (userId: number) => requests.post(`/Payment/updateOrder/${userId}`, {}),
-    clearItems: (userId: number) => requests.delete(`/Payment?userId=${userId}`)
+    clearItems: (userId: number) => requests.delete(`/Payment?userId=${userId}`),
+    getOrders: () => requests.get<Order[]>(`/Payment/GetOrders`)
 }
 
 

@@ -81,6 +81,7 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
 
     return (
         <div >
+            <div style={{ maxHeight: "300px", overflow: "auto" }}>
             <List divided relaxed>
                 {shopingStore.CardItems.map((movie) => (
                     <List.Item key={movie.movieId}>
@@ -121,8 +122,9 @@ const handleDecreaseAmount = async (e: SyntheticEvent<HTMLButtonElement>, movieI
                         </List.Content>
                     </List.Item>
                 ))}
-            </List>
-            <div style={{ display: "flex", alignItems: "center" }}>
+                </List>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", marginTop:'2em' }}>
                 <Button
                     fluid
                     color="red"

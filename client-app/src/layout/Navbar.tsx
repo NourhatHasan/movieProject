@@ -54,7 +54,7 @@ export default observer(function Navbar() {
                 <Menu.Item position="right">
                     <Dropdown pointing="top right" text={userStore.user?.username} className="user-dropdown">
                         <Dropdown.Menu>
-                            <Dropdown.Item as={Link} to={``} className="dropdown-item">
+                            <Dropdown.Item as={Link} to={`/Profile`} className="dropdown-item">
                                 <Icon name="user" />
                                 Profile
                             </Dropdown.Item>
@@ -77,7 +77,8 @@ export default observer(function Navbar() {
                         ):(
                        
                             <Popup
-                                hoverable
+                                    hoverable
+                                    position="bottom right"
                                 trigger={
                                     <Button color="blue" icon>
                                         <Icon name="shopping bag" style={{ marginRight: "10px" }} />

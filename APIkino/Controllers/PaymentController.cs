@@ -1,4 +1,4 @@
-﻿using APIkino.Migrations;
+﻿
 using APIkino.Repositories;
 using com.sun.org.apache.xalan.@internal.xsltc.compiler.util;
 using com.sun.xml.@internal.bind.v2.model.core;
@@ -123,7 +123,7 @@ namespace APIkino.Controllers
 
         [HttpGet("GetOrders")]
 
-        public async Task<ActionResult<IEnumerable<orders>>>Orders()
+        public async Task<ActionResult<IEnumerable<Order>>>Orders()
         {
             try
             {
