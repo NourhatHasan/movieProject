@@ -17,5 +17,6 @@ namespace APIkino.Data
         public DbSet<User> Users { get; set; }
         public DbSet<CartItem> CartItem { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<wishItems> wishList { get; set; }
     }
 }

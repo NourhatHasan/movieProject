@@ -243,5 +243,81 @@ namespace APIkino.Controllers
             }
         }
 
+
+        [HttpPost]   
+        [Route("Wish/{Id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<wishItems>> AddToWishList(int Id)
+        {
+            try
+            {
+                var AddMovie = await this.shoping.addToWishList(Id);
+                if (AddMovie == null)
+                {
+                    return BadRequest("some thing went wrong");
+                }
+             
+                var movie = await this.repository.Geten(AddMovie.Id);
+                if (movie == null)
+                {
+                    _logger.LogError("the Add call to /api/user fieled");
+                    throw new Exception($"Something went wrong when attempting to" +
+                        $" retrieve movies (movieId:({Id})");
+                }
+
+
+
+                return Ok(movie);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "the GET call to /api/user fieled");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                     "Error getting data from the database"
+                     );
+            }
+        }
+
+
+
+        [HttpGet("GetWishItems")]
+        [AllowAnonymous]
+        public async Task<ActionResult<IEnumerable<wishItems>>> GetWishItems()
+        {
+            try
+            {
+
+                //get the User
+                var user = await context.Users.
+                    FirstOrDefaultAsync(x => x.Username == HttpContext.User.FindFirst(ClaimTypes.Name).Value);
+
+                if (user == null) return NotFound();
+
+                var movies = await this.shoping.GetWishList();
+
+
+                //if there is no movies in the sysem
+                if (movies == null)
+                { 
+                    return NoContent();
+                }
+
+
+                return Ok(movies);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "the GET call to GetWishList feled");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ex.Message);
+
+            }
+
+
+        }
+
+
+
     }
 }

@@ -246,7 +246,7 @@ export default class ShopingStore {
             runInAction(() => {
                 this.CardItems = [];
                 this.amount = 0;
-                //router.navigate(`/order`);
+                router.navigate(`/Profile`);
                 store.modalStore.closeModal();
             })
 

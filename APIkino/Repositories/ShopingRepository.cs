@@ -6,6 +6,7 @@ using Org.BouncyCastle.Bcpg;
 using Stripe;
 
 using System.Security.Claims;
+using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 
 namespace APIkino.Repositories
 {
@@ -25,6 +26,14 @@ namespace APIkino.Repositories
         {
             return await this.context.CartItem.AnyAsync(c => c.userId == userId &&
                                                  c.MovieId == movieId);
+
+
+        }
+
+        private async Task<bool> WishItemExsist(int userId, string movieName)
+        {
+            return await this.context.wishList.AnyAsync(c => c.UserId == userId &&
+                                                 c.MovieName == movieName);
 
 
         }
@@ -142,7 +151,7 @@ namespace APIkino.Repositories
             var options = new Stripe.ChargeCreateOptions
 
             {
-                Amount = (long)(amount * 100), 
+                Amount = (long)(amount * 100),
                 Currency = "usd",
                 Source = method.Token, // Payment token obtained from the client-side
                 Description = "Movie purchase"
@@ -176,24 +185,24 @@ namespace APIkino.Repositories
         {
             var cartItems = await cartItemsTask;
 
-            var orders= new List<Order>();
+            var orders = new List<Order>();
             foreach (var item in cartItems)
             {
-                var movie= context.movies.FirstOrDefault(z=>z.Id == item.MovieId);
+                var movie = context.movies.FirstOrDefault(z => z.Id == item.MovieId);
                 var order = new Order
                 {
                     UserId = userId,
                     MovieId = item.MovieId,
-                    MovieName= movie.MovieName,
-                    Des=movie.description,
+                    MovieName = movie.MovieName,
+                    Des = movie.description,
                     Mengde = item.mengde,
-                   
+
                     OrderDate = DateTime.Now
                 };
                 orders.Add(order);
 
                 context.Order.Add(order);
-             
+
 
             }
             context.SaveChanges();
@@ -264,14 +273,73 @@ namespace APIkino.Repositories
 
                 await this.context.SaveChangesAsync();
                 return item;
-             
+
             }
             return null;
         }
 
 
+        public async Task<List<wishItems>> GetWishList()
+        {
+            var userIdClaim = accessor.HttpContext.User.FindFirst("UserId");
+            var userId = Convert.ToInt32(userIdClaim.Value);
 
+            var wishItems=await context.wishList.Where(x=>x.UserId == userId).ToListAsync();
+            return wishItems;
+        }
+        
+
+
+        public async Task<wishItems> addToWishList(int movieId)
+        {
+            var user = await GetLoggedInUser();
+            var movie = await this.context.movies.FindAsync(movieId);
+
+            if (await WishItemExsist(user.Id, movie.MovieName) == true)
+            {
+
+                return null;
+            }
+            else
+            {
+
+
+
+
+                if (movie == null) return null;
+                else
+                {
+
+
+
+                    var wishItem = new wishItems
+                    {
+                        UserId = user.Id,
+                        MovieName = movie.MovieName,
+                        mengde = movie.mengde,
+                        description = movie.description,
+                        price = movie.price,
+
+                    };
+
+                    var result = await this.context.wishList.AddAsync(wishItem);
+
+
+                    await this.context.SaveChangesAsync();
+
+
+
+                    //here we return to the user the entity that has
+                    //been added to the cartItem database 
+                    return wishItem;
+
+                }
+
+
+
+            }
+
+
+        }
     }
-
-
 }
