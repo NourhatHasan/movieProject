@@ -290,15 +290,18 @@ namespace APIkino.Repositories
         
 
 
-        public async Task<wishItems> addToWishList(int movieId)
+        public async Task<Movies> addToWishList(int movieId)
         {
             var user = await GetLoggedInUser();
             var movie = await this.context.movies.FindAsync(movieId);
 
             if (await WishItemExsist(user.Id, movie.MovieName) == true)
             {
+                var item= await this.context.wishList.FirstOrDefaultAsync(x=>x.MovieName==movie.MovieName);
+               this.context.wishList.Remove(item);
+                await this.context.SaveChangesAsync();
 
-                return null;
+                return movie;
             }
             else
             {
@@ -331,7 +334,7 @@ namespace APIkino.Repositories
 
                     //here we return to the user the entity that has
                     //been added to the cartItem database 
-                    return wishItem;
+                    return movie;
 
                 }
 
