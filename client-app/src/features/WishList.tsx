@@ -1,7 +1,8 @@
 import { observer } from "mobx-react-lite";
-import { Button, Card, Grid, Header, Tab } from "semantic-ui-react";
+import { Card, Grid, Header, Tab } from "semantic-ui-react";
+import Loading from "../layout/loading";
 import { useStore } from "../layout/Stores/Store";
-import { Order } from "../Models/Orders";
+
 import { LogInInfo } from "../Models/User";
 
 
@@ -10,7 +11,7 @@ interface props {
     user: LogInInfo;
 
 }
-export default observer(function OrederPage({ user }: props) {
+export default observer(function WishList({ user }: props) {
 
     const { userStore, shopingStore } = useStore();
 
@@ -25,23 +26,24 @@ export default observer(function OrederPage({ user }: props) {
         return description;
     };
 
+  
 
     return (
         <Tab.Pane>
             <Grid>
                 <Grid.Column width={16}>
-                    <Header icon='shopping cart' content='Orders' floated='left'
+                    <Header icon="heart" content='WishList' floated='left'
                         style={{
-                            color: 'blue'
+                            color: 'red'
                         }}
                     />
                     {userStore.getIsLogdIn() && (
                         <Card.Group itemsPerRow='5'>
-                            {shopingStore.order.map((order) => (
-                                <Card key={order.id}>
+                            {shopingStore.wishList.map((list) => (
+                                <Card key={list.id}>
                                     <Card.Content>
-                                        <Card.Header>{order.movieName}</Card.Header>
-                                        <Card.Description>{truncateDes(order.des || '', 6)}</Card.Description>
+                                        <Card.Header>{list.movieName}</Card.Header>
+                                        <Card.Description>{truncateDes(list.description || '', 6)}</Card.Description>
                                     </Card.Content>
 
 
@@ -58,7 +60,7 @@ export default observer(function OrederPage({ user }: props) {
                 </Grid.Column>
             </Grid>
 
-          
+
         </Tab.Pane>
 
     )

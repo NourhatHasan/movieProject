@@ -8,6 +8,7 @@ import { CheckOutForm } from '../../Models/checkOut';
 import { Movies } from '../../Models/Movies';
 import { Order } from '../../Models/Orders';
 import { LogInInfo, UserFormValues } from '../../Models/User';
+import { WishList } from '../../Models/WishList';
 import { router } from '../../routing/router';
 import { store } from '../Stores/Store';
 
@@ -100,14 +101,16 @@ const card = {
     CartItem: (id: number) => requests.get<CardItems>(`/User/${id}`),
     AddItem: (movie: CardItemToAdd) => requests.post<CardItems>('/User', movie),
     deleteItem: (id: number) => requests.delete<CardItems>(`/User/${id}`),
-    updateMenegde: (id: number, update: CardItemMengdeUpdate) => requests.put(`/User/${id}`, update)
+    updateMenegde: (id: number, update: CardItemMengdeUpdate) => requests.put(`/User/${id}`, update),
+    updateWishList: (id: number) => requests.post<WishList>(`/User/Wish/${id}`, {}),
+    getWishList: () => requests.get < WishList[]>(`/User/GetWishItems`)
 }
 
 const payment = {
     totalAmount: (userId: number) => requests.post<void>(`/Payment/totalAmount?userId=${userId}`, {}),
     Process: (values: CheckOutForm, totalAmount: number) => requests.post(`/Payment/Process?totalAmount=${totalAmount}`,values),
     checkOut: (userId: number, values: CheckOutForm) => requests.post(`/Payment/checkout/${userId}`, values),
-    updateOrder: (userId: number) => requests.post(`/Payment/updateOrder/${userId}`, {}),
+    updateOrder: (userId: number) => requests.post < Order>(`/Payment/updateOrder/${userId}`, {}),
     clearItems: (userId: number) => requests.delete(`/Payment?userId=${userId}`),
     getOrders: () => requests.get<Order[]>(`/Payment/GetOrders`)
 }

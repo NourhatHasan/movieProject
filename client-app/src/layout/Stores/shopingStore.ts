@@ -6,6 +6,7 @@ import { CardItemToAdd } from "../../Models/CardItemToAdd";
 import { CheckOutForm } from "../../Models/checkOut";
 import { Movies } from "../../Models/Movies";
 import { Order } from "../../Models/Orders";
+import { WishList } from "../../Models/WishList";
 import { router } from "../../routing/router";
 
 import agent from "../api/agent";
@@ -24,7 +25,8 @@ export default class ShopingStore {
     amount: number = 0;
     order: Order[] = [];
     orderLoading: boolean = false;
-
+    wishListLoading: boolean = false;
+    wishList: WishList[] = [];
 
 
     constructor(movieStore: MovieStore, userStore: UserStore) {
@@ -92,7 +94,7 @@ export default class ShopingStore {
 
             runInAction(() => {
                 this.CardItems = items;
-                console.log(items.map((item) => item.mengde));
+               
                 this.itemLoading = false;
             })
         }
@@ -217,6 +219,7 @@ export default class ShopingStore {
     updateOrder = () => {
         var userId = this.userStore!.user!.id;
         var order = agent.payment.updateOrder(userId);
+
         console.log(order)
     }
     clearItems = () => {
@@ -230,24 +233,28 @@ export default class ShopingStore {
         try {
             var userId = this.userStore!.user!.id;
 
+           
             var amount = this.amount;
             console.log(amount);
 
-            this.process(values);
 
+            this.process(values);
+            
             this.process(values)
                 .then((isSuccessful) => {
                     if (isSuccessful) {
                         this.updateOrder();
                         this.clearItems();
+                        this.getOrders();
                     }
                 })
 
             runInAction(() => {
                 this.CardItems = [];
                 this.amount = 0;
-                router.navigate(`/Profile`);
+                
                 store.modalStore.closeModal();
+                router.navigate(`/Profile`);
             })
 
 
@@ -276,6 +283,48 @@ export default class ShopingStore {
                 console.log(error);
             });
         }
+    }
+
+    updateWishList = async (id: number) => {
+        try {
+            const wishItem = await agent.card.updateWishList(id);
+            runInAction(() => {
+                var movie = this.movieStore.movies.find(x => x.id === id);
+                var item = this.wishList.find(x => x.movieName === movie?.movieName);
+                if (item) {
+                    this.wishList= this.wishList.filter(x => x.movieName !== movie?.movieName);
+                }
+                else {
+                    this.wishList.push(wishItem)
+                }
+            })
+        }
+        catch (error) {
+            runInAction(() => {
+
+                console.log(error);
+            });
+        }
+    }
+
+
+    getWishLisat = async () => {
+        this.wishListLoading = true;
+            try {
+                var wishList = await agent.card.getWishList();
+                runInAction(() => {
+                    this.wishList = wishList;
+                    this.wishListLoading = false;
+                })
+            }
+            catch (error) {
+                runInAction(() => {
+
+                    console.log(error);
+                    this.wishListLoading = false;
+                })
+        }
+
     }
 
 }

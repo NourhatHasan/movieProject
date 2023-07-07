@@ -18,7 +18,7 @@ namespace APIkino.Repositories
         Task<List<Order>> UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask);
         void ClearCart(int UserId);
         Task<IEnumerable<Order>> orders();
-        Task<Movies> addToWishList(int movieId);
+        Task<Movies> UpdateWishList(int movieId);
         Task<List<wishItems>> GetWishList();
 
     }

@@ -290,7 +290,7 @@ namespace APIkino.Repositories
         
 
 
-        public async Task<Movies> addToWishList(int movieId)
+        public async Task<Movies> UpdateWishList(int movieId)
         {
             var user = await GetLoggedInUser();
             var movie = await this.context.movies.FindAsync(movieId);

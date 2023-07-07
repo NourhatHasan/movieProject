@@ -7,6 +7,7 @@ import Loading from "../../layout/loading";
 import { useStore } from "../../layout/Stores/Store";
 import { Movies } from "../../Models/Movies";
 import OrdersPage from "../OrdersPage";
+import WishList from "../WishList";
 
 
 
@@ -18,7 +19,8 @@ export default observer(function Profile() {
 
 
     useEffect(() => {
-        shopingStore.getOrders()
+        shopingStore.getOrders();
+        shopingStore.getWishLisat();
     }, [shopingStore])
 
 
@@ -26,14 +28,18 @@ export default observer(function Profile() {
     const panes = [
         {
             menuItem: ' your Orders', render: () => <OrdersPage user={user!}/>
-        }
-        //  { menuItem: ' wish list', render: () => <wishList user={user} /> },
+        },
+         {
+            
+             menuItem: ' wish list', render: () => <WishList user={user!} />
+        },
 
     ];
 
 
-
     if (shopingStore.orderLoading) return <Loading content={"Orders are loading"} />
+   
+    if (shopingStore.wishListLoading) return <Loading content={"wishList is loading"} />
     return (
         <Container style={{ marginTop: '10em' }}>
 
@@ -43,14 +49,16 @@ export default observer(function Profile() {
                         <Header as="h1">{`Hi ${user.username}!!`}</Header>
                     </Item.Group>
 
-                    <Tab
-                        menu={{
-                            fluid: true, vertical: false, inverted: true,
-                        }}
-                        menuPosition='left'
-                        panes={panes}
-                    />
-
+                    {
+                        user?.username !== 'Solin' && (
+                            <Tab
+                                menu={{
+                                    fluid: true, vertical: false, inverted: true,
+                                }}
+                                menuPosition='left'
+                                panes={panes}
+                            />
+                        )}
                     <div style={{ marginTop: '2em', textAlign: 'center' }}>
                         <Button
                             secondary

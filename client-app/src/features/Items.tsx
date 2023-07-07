@@ -1,6 +1,6 @@
 
 import { observer } from "mobx-react-lite";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
@@ -21,7 +21,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
     const [addTarget, SetAddTarget] = useState<number>(0);
     const [viewTarget, setViewTarget] = useState<number>(0);
     
-
+   
 
     const truncateDes = (description: string, maxWords: number) => {
         const words = description.split(' ');
@@ -54,14 +54,29 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
             setViewTarget(0); // Clear the selected movie state
         }
     }
-
-   
+    function updateWishList(id: number) {
+        shopingStore.updateWishList(id);
+    }
+    useEffect(() => {
+        shopingStore.getWishLisat()
+    }, [shopingStore])
     return (
         <Card.Group itemsPerRow="4">
             {movies.map((movie: Movies) => (
                 <Card key={String(movie.id)}>
                     <Card.Content>
-                        <Card.Header>{movie.movieName}</Card.Header>
+
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Card.Header style={{ flex: 1 }}>{movie.movieName}</Card.Header>
+
+                            {userStore.user?.username !== 'Solin' && (
+                                <Button
+                                    onClick={() => updateWishList(movie.id)}
+                                    style={{ color: shopingStore.wishList.find(x => x.movieName === movie.movieName) ? 'red' : 'black' }}
+                                    icon="heart"
+                                />)}
+                        </div>
+                        
                         <Card.Description>{truncateDes(movie.description || '',6)}</Card.Description>
                     </Card.Content>
                     <Card.Content>

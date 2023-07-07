@@ -247,11 +247,11 @@ namespace APIkino.Controllers
         [HttpPost]   
         [Route("Wish/{Id}")]
         [AllowAnonymous]
-        public async Task<ActionResult<wishItems>> AddToWishList(int Id)
+        public async Task<ActionResult<wishItems>> updateWishList(int Id)
         {
             try
             {
-                var AddMovie = await this.shoping.addToWishList(Id);
+                var AddMovie = await this.shoping.UpdateWishList(Id);
                 if (AddMovie == null)
                 {
                     return BadRequest("some thing went wrong");
