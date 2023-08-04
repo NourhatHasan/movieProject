@@ -8,7 +8,7 @@ namespace KinoClass.Models
         public string? description { get; set; }
         public decimal price { get; set; }
         public int mengde { get; set; }
-       
+       public ICollection<Comments> comments { get; set; }= new List<Comments>();
 
     }
 }

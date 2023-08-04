@@ -297,6 +297,7 @@ export default class ShopingStore {
                 else {
                     this.wishList.push(wishItem)
                 }
+                this.getWishLisat();
             })
         }
         catch (error) {

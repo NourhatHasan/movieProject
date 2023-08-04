@@ -1,5 +1,10 @@
 ﻿using APIkino.Data;
 using APIkino.Repositories.Contracts;
+using APIkino.Tools;
+using com.sun.tools.corba.se.idl;
+using com.sun.xml.@internal.bind.v2.model.core;
+using FluentValidation;
+using java.lang;
 using KinoClass.Models;
 using Microsoft.EntityFrameworkCore;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
@@ -13,9 +18,13 @@ namespace APIkino.Repositories
 
 
         private readonly Context _context;
-        public MoviesRepository(Context context)
+        private readonly ShopingRepository _repository;
+        private readonly IHttpContextAccessor _contextAccessor;
+        public MoviesRepository(Context context, ShopingRepository repository, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _repository = repository;
+            _contextAccessor = httpContextAccessor;
 
 
         }
@@ -30,15 +39,15 @@ namespace APIkino.Repositories
 
 
             return await (from movie in _context.movies
-                                select new Movies
-                                {
-                                    Id = movie.Id,
-                                    MovieName= movie.MovieName,
-                                    description= movie.description,
-                                    price= movie.price,
-                                    mengde= movie.mengde,
-                             
-                                }).ToListAsync();
+                          select new Movies
+                          {
+                              Id = movie.Id,
+                              MovieName = movie.MovieName,
+                              description = movie.description,
+                              price = movie.price,
+                              mengde = movie.mengde,
+
+                          }).ToListAsync();
 
         }
 
@@ -54,7 +63,7 @@ namespace APIkino.Repositories
         {
             var Movie = new Movies()
             {
-               
+
                 MovieName = mr.MovieName,
                 description = mr.description,
                 price = mr.price,
@@ -94,9 +103,90 @@ namespace APIkino.Repositories
         }
 
 
-       
+        public async Task<CommentDTO> CreateComment(string Body, Movies IHttpContextAccessor)
+        {
+            var comment = new Comments
+            {
+                Body = Body
+
+
+            };
+            var validator = new Validation();
+            var validationResult = validator.Validate(comment);
+
+            if (!validationResult.IsValid)
+            {
+                throw new System.Exception("comment validation failed");
+            }
+            else
+            {
+                var user = await _repository.GetLoggedInUser();
+                comment.Auther = user;
+
+                var movieId = _contextAccessor.HttpContext.Request.RouteValues.FirstOrDefault(x => x.Key == "Id").Value.ToString();
+                if (string.IsNullOrEmpty(movieId)) { return null; }
+
+                comment.Movie = await _context.movies.FindAsync(int.Parse(movieId));
+
+                _context.Comments.Add(comment);
+                var success = await _context.SaveChangesAsync() > 0;
+
+                if (success)
+                {
+                    var returnedComment = new CommentDTO
+                    {
+                        Body = comment.Body,
+                        Username = comment.Auther.Username,
+                        CreatedAt = comment.CreatedAt,
+                    };
+                    return returnedComment;
+                }
+                return null;
+            }
+
+
+
+        }
+
+
+        public async Task<IEnumerable<CommentDTO>> getAllComments()
+        {
+            
+            var movieId = _contextAccessor.HttpContext.Request.RouteValues.FirstOrDefault(x => x.Key == "Id").Value.ToString();
+            if (string.IsNullOrEmpty(movieId)) { return Enumerable.Empty<CommentDTO>(); }
+            var movie = await _context.movies.FindAsync(int.Parse(movieId));
+            if (movie == null) { return Enumerable.Empty<CommentDTO>(); }
+
+            var comments = await _context.Comments.Where(x => x.Movie.Id==movie.Id)
+                .OrderBy(x=>x.CreatedAt)
+                  .Select(com => new CommentDTO
+                  {
+                      Username = com.Auther.Username,
+                      CreatedAt = com.CreatedAt,
+                      Body = com.Body
+                  })
+                .ToListAsync();
+
+
+
+           /* var returnedComments = new List< CommentDTO>();
+            comments.ForEach(com =>
+            {
+
+                var comment = new CommentDTO
+                {
+                    Username = com.Auther.Username,
+                    CreatedAt = com.CreatedAt,
+                    Body = com.Body
+                };
+                returnedComments.Add(comment);
+            });
+           */
+            return comments;
+           
+        }
+
+
+
     }
-
-
-
 }
