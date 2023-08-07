@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import CommentStore from "./CommentStore";
 import ModalStore from "./ModalStore";
 
 import MovieStore from "./MovieStore";
@@ -12,6 +13,7 @@ interface Store {
     tokenStore: TokenStore;
     modalStore: ModalStore;
     shopingStore: ShopingStore;
+    commentStore: CommentStore;
 }
 
 const movieStore = new MovieStore();
@@ -19,6 +21,7 @@ const userStore = new UserStore();
 const tokenStore = new TokenStore();
 const modalStore = new ModalStore();
 const shopingStore = new ShopingStore(movieStore, userStore);
+const commentStore = new CommentStore();
 
 export const store: Store = {
     movieStore,
@@ -26,6 +29,7 @@ export const store: Store = {
     tokenStore,
     modalStore,
     shopingStore,
+    commentStore,
 };
 
 export const StoreContext = createContext(store);

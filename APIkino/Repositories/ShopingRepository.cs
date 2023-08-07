@@ -1,4 +1,5 @@
 ﻿using APIkino.Data;
+using APIkino.Repositories.Contracts;
 using KinoClass.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

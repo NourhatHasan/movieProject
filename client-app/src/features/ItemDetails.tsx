@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button, Card, Container, Grid, Header, Icon, Item, Segment } from "semantic-ui-react";
 import Loading from "../layout/loading";
 import { useStore } from "../layout/Stores/Store";
+import ItemDetailsChat from "./ItemDetailsChat";
 
 
 
@@ -81,7 +82,7 @@ export default observer(function ItemDetails() {
                         </Segment>
 
                         <Segment attached='bottom'>
-                            {userStore.user?.username == 'Solin' && (
+                            {userStore.user?.username === 'Solin' && (
                                 <Button
                                     primary
                                     icon='edit'
@@ -89,12 +90,19 @@ export default observer(function ItemDetails() {
                                     as={Link} to={`/Edit/${movie.id}`}
                                 />
                             )}
+                          
+                        </Segment>
+                        <Segment>
+                            <ItemDetailsChat movieId={movie.id} />
+                        </Segment>
+
+                        <Segment>
                             <Button
                                 secondary
                                 icon='arrow left'
                                 content='Go Back'
                                 as={Link} to={'/movies'}
-                               
+
                             />
                         </Segment>
                     </Segment.Group>

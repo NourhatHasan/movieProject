@@ -1,12 +1,12 @@
 ﻿using KinoClass.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace APIkino.Repositories
+namespace APIkino.Repositories.Contracts
 {
     public interface IShoping
     {
 
-        Task<KinoClass.Models.User> GetLoggedInUser();
+        Task<User> GetLoggedInUser();
         Task<CartItem> AddItem(CartItemToAddDto cartItemToAddDto);
         Task<CartItem> DeleteItem(int Id);
         Task<CartItem> GetItem(int id);
@@ -14,7 +14,7 @@ namespace APIkino.Repositories
         Task<CartItem> UpdateItem(int Id, CartItemMengdeUpdate cartItemMengdeUpdate);
 
         decimal calculateTotalAmount(int UserId);
-        PaymentResult paymentProcess(KinoClass.Models.CheckoutRequestDto method, decimal amount);
+        PaymentResult paymentProcess(CheckoutRequestDto method, decimal amount);
         Task<List<Order>> UpdateOrderStatus(int userId, Task<IEnumerable<CartItem>> cartItemsTask);
         void ClearCart(int UserId);
         Task<IEnumerable<Order>> orders();

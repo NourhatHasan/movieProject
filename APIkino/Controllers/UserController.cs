@@ -1,7 +1,6 @@
 ﻿
 using APIkino.Data;
 using APIkino.Extantions;
-using APIkino.Repositories;
 using APIkino.Repositories.Contracts;
 
 using KinoClass.Models;

@@ -35,6 +35,8 @@ namespace APIkino.Tools
                 // Register the Repository classes
                 services.AddScoped<IRepository, MoviesRepository>();
                 services.AddScoped<IShoping, ShopingRepository>();
+                services.AddScoped<MoviesRepository>();
+
 
                 services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
 
@@ -56,6 +58,24 @@ namespace APIkino.Tools
                             ValidIssuer = configuration["JWT:ValidIssuer"],
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
                         };
+
+                        //authentication for the Hub
+                        options.Events = new JwtBearerEvents
+                        {
+                            OnMessageReceived = context =>
+                            {
+                                var accessToken = context.Request.Query["access_token"];
+                                var path = context.HttpContext.Request.Path;
+                                if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/comment")))
+                                {
+                                    context.Token = accessToken;
+                                }
+                                return Task.CompletedTask;
+
+
+                            }
+                        };
+
                     });
 
                 // Authorization
@@ -71,6 +91,10 @@ namespace APIkino.Tools
                         .Build();
                 });
 
+
+                //SignalR
+                services.AddSignalR();
+
                 // Health Checks
                 services.AddHealthChecks()
                     .AddSqlServer(configuration.GetConnectionString("ConnectionAPIConeectionString"));
@@ -78,6 +102,10 @@ namespace APIkino.Tools
                 services.AddHttpContextAccessor();
 
                 // Make sure to add the connection string in appsettings.json
+           
+            
+                
+            
             }
         }
     }

@@ -1,5 +1,4 @@
-﻿
-using APIkino.Repositories;
+﻿using APIkino.Repositories.Contracts;
 using com.sun.org.apache.xalan.@internal.xsltc.compiler.util;
 using com.sun.xml.@internal.bind.v2.model.core;
 using KinoClass.Models;

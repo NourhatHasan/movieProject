@@ -9,6 +9,7 @@ using KinoClass.Models;
 using Microsoft.EntityFrameworkCore;
 using static com.sun.tools.@internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Exception = System.Exception;
 
 namespace APIkino.Repositories
 {
@@ -16,17 +17,33 @@ namespace APIkino.Repositories
     public class MoviesRepository : IRepository
     {
 
-
+        private readonly IHttpContextAccessor _accessor;
         private readonly Context _context;
-        private readonly ShopingRepository _repository;
+
         private readonly IHttpContextAccessor _contextAccessor;
-        public MoviesRepository(Context context, ShopingRepository repository, IHttpContextAccessor httpContextAccessor)
+
+
+        public MoviesRepository(Context context, IHttpContextAccessor httpContextAccessor, IHttpContextAccessor accessor)
         {
             _context = context;
-            _repository = repository;
+         
             _contextAccessor = httpContextAccessor;
+            _accessor = accessor;
+         
 
+        }
 
+        public async Task<KinoClass.Models.User> GetLoggedInUser()
+        {
+            var userIdClaim = _accessor.HttpContext.User.FindFirst("UserId");
+            if (userIdClaim == null)
+            {
+
+                throw new Exception("UserId claim is missing");
+            }
+
+            var userId = Convert.ToInt32(userIdClaim.Value);
+            return await _context.Users.FirstOrDefaultAsync(x => x.Id == userId);
         }
 
 
@@ -101,9 +118,8 @@ namespace APIkino.Repositories
             return "deleted";
 
         }
-
-
-        public async Task<CommentDTO> CreateComment(string Body, Movies IHttpContextAccessor)
+       
+        public async Task<CommentDTO> CreateComment(string Body)
         {
             var comment = new Comments
             {
@@ -112,7 +128,7 @@ namespace APIkino.Repositories
 
             };
             var validator = new Validation();
-            var validationResult = validator.Validate(comment);
+            var validationResult =await validator.ValidateAsync(comment);
 
             if (!validationResult.IsValid)
             {
@@ -120,16 +136,19 @@ namespace APIkino.Repositories
             }
             else
             {
-                var user = await _repository.GetLoggedInUser();
+                var user = await GetLoggedInUser();
                 comment.Auther = user;
 
                 var movieId = _contextAccessor.HttpContext.Request.RouteValues.FirstOrDefault(x => x.Key == "Id").Value.ToString();
-                if (string.IsNullOrEmpty(movieId)) { return null; }
+                if (string.IsNullOrEmpty(movieId))
+                { 
+                    throw new ArgumentNullException(nameof(movieId), "MovieId is missing."); 
+                }
 
-                comment.Movie = await _context.movies.FindAsync(int.Parse(movieId));
+                comment.Movie = await _context.movies.FindAsync(int.Parse(movieId)).ConfigureAwait(false);
 
                 _context.Comments.Add(comment);
-                var success = await _context.SaveChangesAsync() > 0;
+                var success = await _context.SaveChangesAsync().ConfigureAwait(false) > 0;
 
                 if (success)
                 {
@@ -141,7 +160,10 @@ namespace APIkino.Repositories
                     };
                     return returnedComment;
                 }
-                return null;
+                else
+                {
+                    throw new Exception("Failed to save the comment.");
+                }
             }
 
 
@@ -149,13 +171,16 @@ namespace APIkino.Repositories
         }
 
 
-        public async Task<IEnumerable<CommentDTO>> getAllComments()
+        public async Task<IEnumerable<CommentDTO>> GetAllComments(string movieId)
         {
             
-            var movieId = _contextAccessor.HttpContext.Request.RouteValues.FirstOrDefault(x => x.Key == "Id").Value.ToString();
-            if (string.IsNullOrEmpty(movieId)) { return Enumerable.Empty<CommentDTO>(); }
-            var movie = await _context.movies.FindAsync(int.Parse(movieId));
-            if (movie == null) { return Enumerable.Empty<CommentDTO>(); }
+           
+
+            var movie = await _context.movies.FindAsync(int.Parse(movieId)).ConfigureAwait(false);
+            if (movie == null) 
+            {
+                throw new ArgumentException("Movie not found.", nameof(movieId)); 
+            }
 
             var comments = await _context.Comments.Where(x => x.Movie.Id==movie.Id)
                 .OrderBy(x=>x.CreatedAt)

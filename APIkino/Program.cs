@@ -2,6 +2,7 @@
 using APIkino.Data;
 using Microsoft.EntityFrameworkCore;
 using APIkino.Tools.APIkino.Tools;
+using APIkino.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,9 @@ app.UseAuthorization(); //access control (Rights to do something)
 
 
 app.MapControllers();
+
+//url to SignalR
+app.MapHub<CommentHub>("/comment");
 
 //Healthcheck
 //since we block all the pages so we need to add AllowAnonymous
