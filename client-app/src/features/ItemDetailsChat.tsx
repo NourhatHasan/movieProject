@@ -23,11 +23,13 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
         if (movieId) {
             commentStore.createhubConnection(movieId);
         }
-
-        //clean the comments
+        else {
+             //clean the comments
         return () => {
             commentStore.clearComments();
         }
+        }
+       
 
     }, [commentStore, movieId])
 
@@ -54,43 +56,11 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
 
             <Segment attached clearing>
                 <Comment.Group>
-                    
 
-                    {commentStore.comments.map(comment =>
+                    <Formik
 
-                    (
-
-                        <Comment key={comment.id}>
-                          
-                            <Comment.Content>
-                                <Comment.Avatar src={'/pictures/user.png'} />
-                                <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
-                                <Comment.Metadata>
-                                    <div>{formatDistanceToNow(comment.createdAt)} ago</div>
-                                </Comment.Metadata>
-                                <Comment.Text
-                                    style={{ whiteSpace: 'pre-wrap' }}
-                                >{comment.body}</Comment.Text>
-
-                            </Comment.Content>
-                        </Comment>
-
-                    ))}
-
-
-
-                </Comment.Group>
-
-
-            </Segment>
-        </>
-
-
-        /*
-        <Formik
-                        
-                       // onSubmit={(values, { resetForm }) =>
-                          //  commentStore.addComents(values).then(() => resetForm())}
+                        onSubmit={(values, { resetForm }) =>
+                            commentStore.addComment(values).then(() => resetForm())}
                         initialValues={{ body: '' }}
                         validationSchema={Yup.object({
                             body: Yup.string().required()
@@ -124,6 +94,38 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                                 </Field>
                             </Form>
                         )}
-                    </Formik>*/
+                    </Formik>
+
+                    {commentStore.comments.map(comment =>
+
+                    (
+
+                        <Comment key={comment.id}>
+                          
+                            <Comment.Content>
+                                <Comment.Avatar src={'/pictures/user.png'} />
+                                <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
+                                <Comment.Metadata>
+                                    <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                </Comment.Metadata>
+                                <Comment.Text
+                                    style={{ whiteSpace: 'pre-wrap' }}
+                                >{comment.body}</Comment.Text>
+
+                            </Comment.Content>
+                        </Comment>
+
+                    ))}
+
+
+
+                </Comment.Group>
+
+
+            </Segment>
+        </>
+
+
+        
     )
 })

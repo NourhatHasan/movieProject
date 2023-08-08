@@ -138,6 +138,8 @@ namespace APIkino.Controllers
 
         }
 
+        [HttpPost]
+
       
 
 
@@ -209,9 +211,39 @@ namespace APIkino.Controllers
             }
         }
 
-          
-      
 
+        /*
+        [HttpPost]
+        [Route("createComment")]
+
+        public async Task<ActionResult> createComment( int movieId, string body)
+        {
+
+            try
+            {
+                var movie = await _repository.Geten(movieId);
+
+                if (movie == null)
+                {
+                    _logger.LogInformation("Delete: api/movies/{Id}", movieId);
+                    return BadRequest();
+
+
+                }
+                var comment = await _repository.CreateComment(body, movieId);
+                if (comment == null) return BadRequest("comment is null");
+                return Ok(comment);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "the Delete call to api/movie/{Id} f", movieId);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                   "Error getting data from the database"
+                   );
+
+            }
+        }
+        */
 
 
     }

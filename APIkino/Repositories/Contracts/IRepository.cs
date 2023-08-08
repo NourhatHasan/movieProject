@@ -10,9 +10,7 @@ namespace APIkino.Repositories.Contracts
         Task<Movies> AddMovie(Movies movie);
         Task<Movies> UpdateMovie(int Id,Movies movie);
         Task<string> Delete(int Id);
-        Task<CommentDTO> CreateComment(string Body);
-        Task<IEnumerable<CommentDTO>> GetAllComments(string movieId);
-
+       
       
 
     }

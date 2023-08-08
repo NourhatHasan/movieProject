@@ -2,6 +2,7 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "axios": "^1.4.0",
+    "date-fns": "^2.30.0",
     "git": "^0.1.5",
     "react-toastify": "^9.1.3"
   }

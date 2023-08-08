@@ -20,6 +20,7 @@ export default class UserStore {
         try {
             const logInuser = await agent.user.logIn(user);
             console.log(logInuser)
+           
             store.tokenStore.setToken(logInuser.token!);
             runInAction(() => {
                 this.user = logInuser;

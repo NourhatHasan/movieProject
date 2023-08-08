@@ -35,7 +35,7 @@ namespace APIkino.Tools
                 // Register the Repository classes
                 services.AddScoped<IRepository, MoviesRepository>();
                 services.AddScoped<IShoping, ShopingRepository>();
-                services.AddScoped<MoviesRepository>();
+                services.AddScoped<commentSignalR>();
 
 
                 services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
