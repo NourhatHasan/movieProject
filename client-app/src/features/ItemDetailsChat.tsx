@@ -106,7 +106,7 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                                 <Comment.Avatar src={'/pictures/user.png'} />
                                 <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
                                 <Comment.Metadata>
-                                    <div>{formatDistanceToNow(comment.createdAt)} ago</div>
+                                   
                                 </Comment.Metadata>
                                 <Comment.Text
                                     style={{ whiteSpace: 'pre-wrap' }}

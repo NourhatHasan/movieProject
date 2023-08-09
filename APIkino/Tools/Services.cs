@@ -8,6 +8,8 @@ using Stripe;
 using Microsoft.EntityFrameworkCore;
 using APIkino.Data;
 using System.Text;
+using MediatR;
+using APIkino.SignalR;
 
 namespace APIkino.Tools
 {
@@ -35,8 +37,7 @@ namespace APIkino.Tools
                 // Register the Repository classes
                 services.AddScoped<IRepository, MoviesRepository>();
                 services.AddScoped<IShoping, ShopingRepository>();
-                services.AddScoped<commentSignalR>();
-
+            
 
                 services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
 
@@ -94,6 +95,12 @@ namespace APIkino.Tools
 
                 //SignalR
                 services.AddSignalR();
+
+
+                //mediatR
+                services.AddMediatR(typeof(ListComments.Handler));
+
+
 
                 // Health Checks
                 services.AddHealthChecks()
