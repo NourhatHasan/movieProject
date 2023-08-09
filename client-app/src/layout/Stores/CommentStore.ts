@@ -1,8 +1,9 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { makeAutoObservable, runInAction } from "mobx";
-import { number } from "yup";
+
 import { MovieComments } from "../../Models/movieComments";
 import { store } from "./Store";
+
 
 export default class CommentStore {
     comments: MovieComments[] = [];
@@ -33,8 +34,10 @@ export default class CommentStore {
             this.hubConnection.on('LoadComments', (comments: MovieComments[]) => {
                 runInAction(() => {
                     comments.forEach(comment => {
-                        comment.createdAt = new Date(comment.createdAt + 'z')
+                        comment.createdAt = new Date(comment.createdAt + 'Z')
+
                     })
+                   
                     this.comments = comments
                 });
             });
@@ -42,7 +45,7 @@ export default class CommentStore {
             this.hubConnection.on('ReceiveComment', (comment: MovieComments) => {
                 runInAction(() => {
                     comment.createdAt = new Date(comment.createdAt)
-                    this.comments.push(comment)
+                    this.comments.unshift(comment)
                 })
             })
             

@@ -89,3 +89,8 @@ code {
     margin: 0 8px;
 }
 
+.text-area {
+    border: 2px solid black;
+    padding: 10px;
+    border-radius: 5px;
+}

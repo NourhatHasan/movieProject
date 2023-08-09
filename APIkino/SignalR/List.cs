@@ -34,7 +34,7 @@ namespace APIkino.SignalR
                 }
 
                 return await _context.Comments.Where(x => x.Movie.Id == movie.Id)
-                    .OrderBy(x => x.CreatedAt)
+                    .OrderByDescending(x => x.CreatedAt)
                       .Select(com => new CommentDTO
                       {
                           Username = com.Auther.Username,

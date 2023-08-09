@@ -6,6 +6,10 @@ import { Header, Segment, Comment, Loader } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import * as Yup from 'yup'
 import { Link } from "react-router-dom";
+import { formatDistance } from "date-fns";
+
+
+
 
 
 
@@ -74,6 +78,7 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                                         <div style={{ position: 'relative' }} >
                                             <Loader active={isSubmitting} />
                                             <textarea
+                                                style={{ border: '2px solid black', padding: '10px', borderRadius: '5px' }}
                                                 placeholder='Enter your comment (Enter to Submit and Enter + Shift for new line)'
                                                 rows={2}
                                                 {...props.field}
@@ -96,26 +101,26 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                         )}
                     </Formik>
 
-                    {commentStore.comments.map(comment =>
+                    {commentStore.comments.map(comment => 
+                      
+                        (
 
-                    (
+                            <Comment key={comment.id}>
 
-                        <Comment key={comment.id}>
-                          
-                            <Comment.Content>
-                                <Comment.Avatar src={'/pictures/user.png'} />
-                                <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
+                                <Comment.Content>
+                                    <Comment.Avatar src={'/user.jpg'} />
+                                    <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
                                 <Comment.Metadata>
-                                   
-                                </Comment.Metadata>
-                                <Comment.Text
-                                    style={{ whiteSpace: 'pre-wrap' }}
-                                >{comment.body}</Comment.Text>
+                                    <div>{formatDistance(comment.createdAt, new Date())} ago</div>
+                                    </Comment.Metadata>
+                                    <Comment.Text
+                                        style={{ whiteSpace: 'pre-wrap' }}
+                                    >{comment.body}</Comment.Text>
 
-                            </Comment.Content>
-                        </Comment>
+                                </Comment.Content>
+                            </Comment>
 
-                    ))}
+                        ))}
 
 
 
