@@ -1,12 +1,15 @@
 /* eslint-disable react/jsx-no-undef */
-import { Formik, Form, Field, FieldProps } from "formik";
+import { Formik, Form } from "formik";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import { Header, Segment, Comment, Loader } from "semantic-ui-react";
+import { ChangeEvent, useEffect, useState} from "react";
+import { Header, Segment, Comment, Button } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import * as Yup from 'yup'
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
+import TextEreaForm from "./TextAreaForm";
+import StarRating from "./StarRating";
+import { CommentsFormValues } from "../Models/movieComments";
 
 
 
@@ -22,27 +25,52 @@ interface props {
 export default observer(function MovieDetailsChat({ movieId }: props) {
 
     const { commentStore } = useStore();
+    const [rating, setRating] = useState < number>(0);
+
+    const [comment, setComment] = useState<CommentsFormValues>(
+        new CommentsFormValues());
+
 
     useEffect(() => {
         if (movieId) {
             commentStore.createhubConnection(movieId);
         }
         else {
-             //clean the comments
-        return () => {
-            commentStore.clearComments();
+            //clean the comments
+            return () => {
+                commentStore.clearComments();
+            }
         }
-        }
-       
+
 
     }, [commentStore, movieId])
 
-    commentStore.comments.forEach(comment => {
-        console.log(comment);
-    });
+  
 
-    function formatDistanceToNow(createdDate: any): import("react").ReactNode {
-        throw new Error("Function not implemented.");
+
+   
+    const handleSubmit = ((movieComments: any) => {
+        console.log(movieComments);
+        
+        commentStore.addComment(movieComments);
+
+    })
+
+    const validation = Yup.object({
+        
+        body: Yup.string().required(),
+        starRating: Yup.number().required(),
+
+    })
+
+    const handleRatingChange = (newRating: number) => {
+        setRating(newRating);
+        change('starRating', newRating);
+    };
+    const change = (name: string, value: any) => {
+       
+        setComment({ ...comment, [name]: value })
+        console.log(value)
     }
 
     return (
@@ -54,78 +82,67 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                 color='teal'
                 style={{ border: 'none' }}
             >
-                <Header>Chat about this event</Header>
+
+                <Header>reviews about this movie</Header>
             </Segment>
 
 
             <Segment attached clearing>
                 <Comment.Group>
+                    {commentStore.comments.map(comment =>
 
-                    <Formik
+                    (
 
-                        onSubmit={(values, { resetForm }) =>
-                            commentStore.addComment(values).then(() => resetForm())}
-                        initialValues={{ body: '' }}
-                        validationSchema={Yup.object({
-                            body: Yup.string().required()
-                        })}
+                        <Comment key={comment.id}>
 
-                    >
-                        {({ isSubmitting, isValid, handleSubmit }) => (
-                            <Form className='ui form'>
-                                <Field name='body'>
-                                    {(props: FieldProps) => (
-                                        <div style={{ position: 'relative' }} >
-                                            <Loader active={isSubmitting} />
-                                            <textarea
-                                                style={{ border: '2px solid black', padding: '10px', borderRadius: '5px' }}
-                                                placeholder='Enter your comment (Enter to Submit and Enter + Shift for new line)'
-                                                rows={2}
-                                                {...props.field}
-                                                onKeyPress={e => {
-                                                    if (e.key === 'Enter' && e.shiftKey) {
-                                                        //new line
-                                                        return;
-                                                    }
-                                                    if (e.key === 'Enter' && !e.shiftKey) {
-                                                        e.preventDefault();
-                                                        isValid && handleSubmit();
-                                                    }
-                                                }}
-
-                                            />
-                                        </div>
-                                    )}
-                                </Field>
-                            </Form>
-                        )}
-                    </Formik>
-
-                    {commentStore.comments.map(comment => 
-                      
-                        (
-
-                            <Comment key={comment.id}>
-
-                                <Comment.Content>
-                                    <Comment.Avatar src={'/user.jpg'} />
-                                    <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
+                            <Comment.Content>
+                                <Comment.Avatar src={'/user.jpg'} />
+                                <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>
                                 <Comment.Metadata>
                                     <div>{formatDistance(comment.createdAt, new Date())} ago</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text
-                                        style={{ whiteSpace: 'pre-wrap' }}
-                                    >{comment.body}</Comment.Text>
+                                </Comment.Metadata>
+                                <Comment.Text
+                                    style={{ whiteSpace: 'pre-wrap' }}
+                                >{comment.body}</Comment.Text>
 
-                                </Comment.Content>
-                            </Comment>
+                            </Comment.Content>
+                        </Comment>
 
-                        ))}
+                    ))}
 
 
 
                 </Comment.Group>
+                <Formik
+                    validationSchema={validation}
+                    enableReinitialize
+                    initialValues={comment}
+                    onSubmit={(values, { resetForm }) => {
+                        handleSubmit(values);
+                        resetForm();
+                        setRating(0);
+                    }
+                    }>
 
+                    {({ handleSubmit, isValid, isSubmitting, dirty }) => (
+                        <Form onSubmit={handleSubmit} className="ui form" autoComplete="off">
+                            <StarRating
+                                rating={rating}
+                                onRatingChange={handleRatingChange}
+                              
+                            />
+                            <TextEreaForm name={'body'} placeholder={'Comment'} rows={3} />
+                            <Button
+                                disabled={isSubmitting || !dirty || !isValid}
+                                loading={isSubmitting}
+                                type="submit"
+                                positive
+                                floated="right">
+                                Submit
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
 
             </Segment>
         </>

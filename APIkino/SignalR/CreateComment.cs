@@ -13,6 +13,7 @@ namespace APIkino.SignalR
         public class command : IRequest<CommentDTO>
         {
             public string Body { get; set; }
+            public int StarRating { get; set; }
             public int MovieId { get; set; }
         }
 
@@ -21,7 +22,9 @@ namespace APIkino.SignalR
             public comandvalidator()
             {
                 RuleFor(x => x.Body).NotEmpty()
-                    .WithMessage(" body s required");
+                    .WithMessage(" body is required");
+                RuleFor(x => x.StarRating).NotEmpty()
+                    .WithMessage(" Star Rating is Required");
             }
         }
 
@@ -54,17 +57,21 @@ namespace APIkino.SignalR
                 {
                     Auther = user,
                     Movie = movie,
+                    StarRating=request.StarRating,
                     Body = request.Body,
                     CreatedAt = DateTime.UtcNow
                 };
                 movie.comments.Add(comment);
                 _context.Comments.Add(comment);
+
               var success=  await _context.SaveChangesAsync();
                 if (success > 0)
                 {
                     var commentToReturn = new CommentDTO
                     {
+                        Id=comment.Id,
                         Username = user.Username,
+                        StarRating = request.StarRating,
                         Body = request.Body,
                         CreatedAt = DateTime.UtcNow
 

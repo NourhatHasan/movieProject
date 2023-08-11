@@ -11,7 +11,7 @@ namespace APIkino.Tools
         public Validation()
         {
             RuleFor(x => x.Body).NotEmpty();
-           
+           RuleFor(x=>x.StarRating).NotEmpty();
         }
     }
 

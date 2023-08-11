@@ -89,8 +89,6 @@ code {
     margin: 0 8px;
 }
 
-.text-area {
-    border: 2px solid black;
-    padding: 10px;
-    border-radius: 5px;
+.selected-stars .star-ratings-star {
+    color: orange; /* Changing to the color you want for selected stars */
 }

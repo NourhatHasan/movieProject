@@ -33,11 +33,12 @@ export default class CommentStore {
             this.hubConnection.start().catch(error => console.log("Error establishing the connection ", error));
             this.hubConnection.on('LoadComments', (comments: MovieComments[]) => {
                 runInAction(() => {
+                    console.log(comments)
                     comments.forEach(comment => {
                         comment.createdAt = new Date(comment.createdAt + 'Z')
 
                     })
-                   
+                    console.log(comments)
                     this.comments = comments
                 });
             });
@@ -63,13 +64,14 @@ export default class CommentStore {
 
 
     addComment = async (values: any) => {
-
-        values.movieId = store.movieStore.selectedMovie?.id;
         console.log(values)
+        values.movieId = store.movieStore.selectedMovie?.id;
+        //console.log(values.starRating)
         try {
-          console.log("try")
+         
             var comment = await this.hubConnection?.invoke('SendComment', values);
             console.log(comment)
+           
             }
            catch (error) {
             console.log(error);

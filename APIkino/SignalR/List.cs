@@ -37,9 +37,11 @@ namespace APIkino.SignalR
                     .OrderByDescending(x => x.CreatedAt)
                       .Select(com => new CommentDTO
                       {
+                          Id = com.Id,
                           Username = com.Auther.Username,
                           CreatedAt = com.CreatedAt,
-                          Body = com.Body
+                          Body = com.Body,
+                          StarRating= com.StarRating,   
                       })
                     .ToListAsync();
 

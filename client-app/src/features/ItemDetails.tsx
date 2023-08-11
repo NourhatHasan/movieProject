@@ -110,10 +110,5 @@ export default observer(function ItemDetails() {
             </Grid>
         </Container>
     );
-
-
-
-      
   
-    
 })
