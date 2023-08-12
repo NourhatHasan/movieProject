@@ -64,7 +64,7 @@ public class AuthenticationController : ControllerBase
 
             await _context.SaveChangesAsync();
 
-
+           await logginn(Request);
             return Ok(user);
         }
         catch (Exception ex)

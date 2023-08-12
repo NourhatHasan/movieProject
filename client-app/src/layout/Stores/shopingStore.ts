@@ -254,6 +254,7 @@ export default class ShopingStore {
                 this.amount = 0;
                 
                 store.modalStore.closeModal();
+                this.updateOrder();
                 router.navigate(`/Profile`);
             })
 

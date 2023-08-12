@@ -67,6 +67,7 @@ export default class UserStore {
             store.tokenStore.setToken(Registeruser.token!);
             runInAction(() => {
                 this.user = Registeruser;
+                this.login(user);
                 router.navigate('/movies')
                 store.modalStore.closeModal();
             })

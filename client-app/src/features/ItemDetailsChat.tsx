@@ -10,7 +10,7 @@ import { formatDistance } from "date-fns";
 import TextEreaForm from "./TextAreaForm";
 import StarRating from "./StarRating";
 import { CommentsFormValues } from "../Models/movieComments";
-import StarRated from "./StarRated";
+
 
 
 
