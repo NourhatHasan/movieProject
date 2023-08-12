@@ -1,24 +1,16 @@
 
 import StarRatings from 'react-star-ratings';
-
-
-
 interface StarRatingProps {
     rating: number;
-    onRatingChange: (newRating: number) => void ;
+
 }
 
-const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
+const StarRated: React.FC<StarRatingProps> = ({ rating}) => {
     return (
         <div className="selected-stars">
             <StarRatings
                 rating={rating}
                 starRatedColor="orange"
-                
-                changeRating={newRating => {
-                    onRatingChange(newRating);
-                }
-                }
                 numberOfStars={5}
                 starDimension="20px"
                 starSpacing="2px"
@@ -30,4 +22,4 @@ const StarRating: React.FC<StarRatingProps> = ({ rating, onRatingChange }) => {
 };
 
 
-export default StarRating;
+export default StarRated;

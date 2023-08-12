@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-no-undef */
 import { Formik, Form } from "formik";
 import { observer } from "mobx-react-lite";
-import { ChangeEvent, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import { Header, Segment, Comment, Button } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import * as Yup from 'yup'
@@ -10,6 +10,7 @@ import { formatDistance } from "date-fns";
 import TextEreaForm from "./TextAreaForm";
 import StarRating from "./StarRating";
 import { CommentsFormValues } from "../Models/movieComments";
+import StarRated from "./StarRated";
 
 
 
@@ -94,7 +95,8 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                     (
 
                         <Comment key={comment.id}>
-
+                            <StarRated rating={comment.starRating}
+                               />
                             <Comment.Content>
                                 <Comment.Avatar src={'/user.jpg'} />
                                 <Comment.Author as={Link} to={``}>{comment.username}</Comment.Author>

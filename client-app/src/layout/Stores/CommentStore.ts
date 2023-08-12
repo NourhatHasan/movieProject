@@ -33,7 +33,7 @@ export default class CommentStore {
             this.hubConnection.start().catch(error => console.log("Error establishing the connection ", error));
             this.hubConnection.on('LoadComments', (comments: MovieComments[]) => {
                 runInAction(() => {
-                    console.log(comments)
+                   
                     comments.forEach(comment => {
                         comment.createdAt = new Date(comment.createdAt + 'Z')
 
@@ -44,6 +44,7 @@ export default class CommentStore {
             });
 
             this.hubConnection.on('ReceiveComment', (comment: MovieComments) => {
+                console.log(comment);
                 runInAction(() => {
                     comment.createdAt = new Date(comment.createdAt)
                     this.comments.unshift(comment)
