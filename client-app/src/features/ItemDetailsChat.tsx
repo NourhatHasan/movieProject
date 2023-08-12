@@ -95,7 +95,7 @@ export default observer(function MovieDetailsChat({ movieId }: props) {
                     (
 
                         <Comment key={comment.id}>
-                            <StarRated rating={comment.starRating}
+                            <StarRating rating={comment.starRating}
                                />
                             <Comment.Content>
                                 <Comment.Avatar src={'/user.jpg'} />
