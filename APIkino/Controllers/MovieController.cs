@@ -1,5 +1,6 @@
 ﻿using APIkino.Constants;
 using APIkino.Data;
+using APIkino.Photo;
 using APIkino.Repositories.Contracts;
 using com.sun.corba.se.spi.activation;
 using com.sun.xml.@internal.bind.v2.model.core;
@@ -21,10 +22,12 @@ namespace APIkino.Controllers
         private readonly ILogger<MovieController> _logger;
 
         private readonly IRepository _repository;
-        public MovieController(IRepository repository, ILogger<MovieController> logger)
+        private readonly Iphoto _photo;
+        public MovieController(IRepository repository, ILogger<MovieController> logger, Iphoto photo)
         {
            _repository= repository;
             _logger = logger;
+            _photo = photo;
 
         }
 
@@ -111,17 +114,25 @@ namespace APIkino.Controllers
 
         [HttpPost]
        [Authorize(Policy = sjekk.MustBeTheOwner)]
-        public async Task<ActionResult> AddMovie(Movies mr)
+        public async Task<ActionResult> AddMovie([FromForm] MovieDTO mr, IFormFile File)
         {
             try
             {
                 //add the new movie
-                var movie = await _repository.AddMovie(mr);
-
-                if (movie != null)
+                var movie = new Movies
                 {
+                    MovieName = mr.MovieName,
+                    price = mr.price,
+                    description = mr.description,
+                    mengde = mr.mengde,
+                };
+                  var adding=  await _repository.AddMovie(movie,File);
+                
+                if ( movie!= null)
+                {
+                   // var photo = await _photo.updatePhot(photoFile, movie.MovieName);
                     _logger.LogInformation("Post: api/movie ");
-                    return Ok(movie);
+                    return Ok(adding);
                 }
                 _logger.LogError("the POST call to /api/movies fieled. Task value was {mr}", mr);
                 return BadRequest();
@@ -138,7 +149,7 @@ namespace APIkino.Controllers
 
         }
 
-        [HttpPost]
+        
 
       
 

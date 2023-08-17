@@ -7,7 +7,7 @@ namespace APIkino.Repositories.Contracts
     {
         Task<IEnumerable<Movies>> GetAll();
         Task<Movies> Geten(int Id);
-        Task<Movies> AddMovie(Movies movie);
+        Task<Movies> AddMovie(Movies movie, IFormFile File);
         Task<Movies> UpdateMovie(int Id,Movies movie);
         Task<string> Delete(int Id);
        

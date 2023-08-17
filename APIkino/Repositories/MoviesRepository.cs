@@ -1,4 +1,5 @@
 ﻿using APIkino.Data;
+using APIkino.Interfaces;
 using APIkino.Repositories.Contracts;
 using APIkino.Tools;
 using com.sun.tools.corba.se.idl;
@@ -18,19 +19,19 @@ namespace APIkino.Repositories
     {
 
         private readonly IHttpContextAccessor _accessor;
+        private readonly IPhotoAccessor _photoAccessor;
         private readonly Context _context;
 
         private readonly IHttpContextAccessor _contextAccessor;
 
 
-        public MoviesRepository(Context context, IHttpContextAccessor httpContextAccessor, IHttpContextAccessor accessor)
+        public MoviesRepository(Context context, IHttpContextAccessor httpContextAccessor, IHttpContextAccessor accessor, IPhotoAccessor photoAccessor)
         {
             _context = context;
 
             _contextAccessor = httpContextAccessor;
             _accessor = accessor;
-
-
+            _photoAccessor = photoAccessor;
         }
 
 
@@ -64,15 +65,33 @@ namespace APIkino.Repositories
             return movie;
         }
 
-        public async Task<Movies> AddMovie(Movies mr)
+        public async Task<Movies> AddMovie(Movies mr, IFormFile File)
         {
+
+            var photoUploadResult = _photoAccessor.AddPhoto(File);
+
+            //client return photo
+            var photo = new photo
+            {
+                Id = photoUploadResult.Result.PublicId,
+                Url = photoUploadResult.Result.Url,
+
+            };
+            if (photo == null)
+            {
+                return null;
+            }
+           
+            _context.photos.Add(photo);
+
             var Movie = new Movies()
             {
 
                 MovieName = mr.MovieName,
                 description = mr.description,
                 price = mr.price,
-                mengde = mr.mengde
+                mengde = mr.mengde,
+                photo= photo,
             };
             //takl to the database using context for store the new movie 
             await _context.movies.AddAsync(Movie);

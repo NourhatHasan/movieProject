@@ -10,6 +10,8 @@ using APIkino.Data;
 using System.Text;
 using MediatR;
 using APIkino.SignalR;
+using APIkino.Photo;
+using APIkino.Interfaces;
 
 namespace APIkino.Tools
 {
@@ -37,7 +39,8 @@ namespace APIkino.Tools
                 // Register the Repository classes
                 services.AddScoped<IRepository, MoviesRepository>();
                 services.AddScoped<IShoping, ShopingRepository>();
-            
+                services.AddScoped<IPhotoAccessor, photoAccessor>();
+                services.AddScoped<Iphoto, photoRepository>();
 
                 services.Configure<StripeSettings>(configuration.GetSection("StripeSettings"));
 
@@ -108,9 +111,12 @@ namespace APIkino.Tools
 
                 services.AddHttpContextAccessor();
 
+                services.Configure<CloudinarySetting>(configuration.GetSection("Cloudinary"));
+
                 // Make sure to add the connection string in appsettings.json
            
             
+
                 
             
             }

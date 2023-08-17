@@ -8,10 +8,10 @@ namespace KinoClass.Models
         public int Id { get; set; }
 
         [Required]
-        public string? MovieName { get; set; }
+        public string MovieName { get; set; }
       
         [Required] 
-        public string? description { get; set; }
+        public string description { get; set; }
         [Required]
         public decimal price { get; set; }
 
