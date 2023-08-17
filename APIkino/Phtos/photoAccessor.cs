@@ -24,18 +24,18 @@ namespace APIkino.Photo
             _cloudinary = new Cloudinary( account );
         }
 
-        public async Task<uploadResult> AddPhoto(IFormFile file)
+        public async Task<uploadResult> AddPhoto(IFormFile File)
         {
-           if(file.Length>0 ) 
+           if(File !=null && File.Length>0 ) 
             { 
                 // we open a scope with using and it automaticly close and read it 
                
-                await using var stream= file.OpenReadStream();
+                await using var stream= File.OpenReadStream();
 
                 //creating the parametes we want to be saved in cloudinary
                 var uploadParams = new ImageUploadParams
                 {
-                    File = new FileDescription(file.FileName, stream),
+                    File = new FileDescription(File.FileName, stream),
                     //making it to square photos
                     Transformation = new Transformation().Height(500).Width(500).Crop("fill"),
                 };

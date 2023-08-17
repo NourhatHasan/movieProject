@@ -99,24 +99,57 @@ namespace APIkino.Repositories
             return Movie;
         }
 
-        public async Task<Movies> UpdateMovie(int Id, Movies update)
+        public async Task<Movies> UpdateMovie(int Id, Movies update, IFormFile File)
         {
             var movie = await _context.movies.FindAsync(Id);
+            if (movie.photo != null)
+            {
+                var deletePhoto = _photoAccessor.DeletePhoto(movie.photo.Id);
+            }
+            if (File == null)
+            {
+                return null;
+            }
+            var photoUploadResult =await _photoAccessor.AddPhoto(File);
+
+            if (photoUploadResult != null)
+            {
+                //client return photo
+                var photo = new photo
+                {
+                    Id = photoUploadResult.PublicId,
+                    Url = photoUploadResult.Url,
+
+                };
+
+              
 
 
-            movie.MovieName = update.MovieName;
-            movie.description = update.description;
-            movie.price = update.price;
-            movie.mengde = update.mengde;
+                movie.MovieName = update.MovieName;
+                movie.description = update.description;
+                movie.price = update.price;
+                movie.mengde = update.mengde;
+                movie.photo = photo;
 
-            await _context.SaveChangesAsync();
-            return movie;
+
+
+
+                await _context.SaveChangesAsync();
+                return movie;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public async Task<string> Delete(int Id)
         {
             var movie = await _context.movies.FindAsync(Id);
-
+            if (movie.photo != null)
+            {
+                var deletePhoto = _photoAccessor.DeletePhoto(movie.photo.Id);
+            }
 
             _context.Remove(movie);
 

@@ -159,12 +159,21 @@ namespace APIkino.Controllers
         [HttpPut]
         [Route("{Id}")]
         [Authorize(Policy = sjekk.MustBeTheOwner)]
-        public async Task<ActionResult> Update([FromRoute] int Id, Movies update)
+        public async Task<ActionResult> Update([FromRoute] int Id, [FromForm] MovieDTO update, IFormFile File)
         {
             
             try
             {
-                var movie = await _repository.UpdateMovie(Id, update);
+                var newmovie = new Movies
+                {
+                    MovieName = update.MovieName,
+                    price = update.price,
+                    description = update.description,
+                    mengde = update.mengde,
+
+
+                };
+                var movie = await _repository.UpdateMovie(Id, newmovie, File);
 
                 if (movie != null)
                 {
