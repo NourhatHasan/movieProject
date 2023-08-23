@@ -45,6 +45,7 @@ namespace APIkino.Repositories
 
 
             return await (from movie in _context.movies
+                          .Include(x=>x.photo)
                           select new Movies
                           {
                               Id = movie.Id,
@@ -52,6 +53,7 @@ namespace APIkino.Repositories
                               description = movie.description,
                               price = movie.price,
                               mengde = movie.mengde,
+                              photo=movie.photo,
 
                           }).ToListAsync();
 
@@ -61,7 +63,7 @@ namespace APIkino.Repositories
 
         public async Task<Movies> Geten(int Id)
         {
-            var movie = await _context.movies.FindAsync(Id);
+            var movie = await _context.movies.Include(x=>x.photo).FirstOrDefaultAsync(x=>x.Id==Id);
             return movie;
         }
 
