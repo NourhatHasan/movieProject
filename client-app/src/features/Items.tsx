@@ -2,7 +2,7 @@
 import { observer } from "mobx-react-lite";
 import { SyntheticEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, Grid, Icon } from "semantic-ui-react";
+import {Image, Button, Card, Grid, Icon } from "semantic-ui-react";
 import { useStore } from "../layout/Stores/Store";
 import { CardItemToAdd } from "../Models/CardItemToAdd";
 import { Movies } from "../Models/Movies";
@@ -41,7 +41,7 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
             movieId: movieId,
             mengde: 1,
         };
-        console.log(cardItem);
+      
         shopingStore.addToCard(cardItem);
     }
 
@@ -58,14 +58,25 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
         shopingStore.updateWishList(id);
     }
     useEffect(() => {
+      
         shopingStore.getWishLisat()
+        
     }, [shopingStore])
-    return (
-        <Card.Group itemsPerRow="4">
-            {movies.map((movie: Movies) => (
-                <Card key={String(movie.id)}>
-                    <Card.Content>
 
+    
+  //  console.log(movies.map(x => x.photos?.url));
+    return (
+        <Card.Group itemsPerRow="4" >
+            {movies.map((movie: Movies) =>  
+               
+            (
+                <Card key={String(movie.id)}>
+
+                  
+                    <Image src={movie.photo?.url || "/FilmLogo.jpg" }  size='medium' />
+                   
+                    <Card.Content>
+                       
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <Card.Header style={{ flex: 1 }}>{movie.movieName}</Card.Header>
 

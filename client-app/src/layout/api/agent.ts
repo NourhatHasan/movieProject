@@ -5,7 +5,7 @@ import { CardItemMengdeUpdate } from '../../Models/CardItemMengdeUpdate';
 import { CardItems } from '../../Models/CardItems';
 import { CardItemToAdd } from '../../Models/CardItemToAdd';
 import { CheckOutForm } from '../../Models/checkOut';
-import { Movies } from '../../Models/Movies';
+import { movieForm, Movies } from '../../Models/Movies';
 import { Order } from '../../Models/Orders';
 import { LogInInfo, UserFormValues } from '../../Models/User';
 import { WishList } from '../../Models/WishList';
@@ -78,7 +78,19 @@ const requests = {
 const movies = {
     list: () => requests.get<Movies[]>('/Movie'),
     details: (id: number) => requests.get<Movies>(`/Movie/${id}`),
-    create: (movie: Movies) => requests.post<void>('/Movie', movie),
+
+    create: (movie: movieForm, file: Blob) => {
+        const formData = new FormData();
+        formData.append('File', file!); // Append the file
+        formData.append('MovieName', movie.movieName);
+        formData.append('description', movie.description);
+        formData.append('price', movie.price.toString());
+        formData.append('mengde', movie.mengde.toString());
+
+        return axios.post<Movies>('/Movie', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
     update: (movie: Movies, id: number) => requests.put<void>(`/Movie/${id}`, movie),
     del: (id: number) => requests.delete<void>(`/Movie/${id}`),
 }

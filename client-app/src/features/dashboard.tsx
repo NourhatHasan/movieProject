@@ -19,6 +19,7 @@ export const Dashboard = observer(function  Dashboard( ) {
 
 
     if (movieStore.initLoading) return <Loading content={"movies loading"} />
+   
     return (
         <Segment divided="true" style={{ marginTop: '5em' }}>
             <Grid>

@@ -38,10 +38,11 @@ export default observer(function ItemDetails() {
     return (
         <Container style={{ marginTop: '10em' }}>
             <Grid>
-                <Grid.Column width={16}>
+                <Grid.Column width={10}>
                     <Segment.Group>
                         <Segment attached='top' style={{ padding: '1em', marginBottom: '2em' }}>
                             <Item.Group>
+                                <Item.Image src={movie.photo?.url} />
                                 <Item.Content>
                                     <Header
                                         size='huge'
@@ -89,14 +90,9 @@ export default observer(function ItemDetails() {
                                     content='Edit Movie'
                                     as={Link} to={`/Edit/${movie.id}`}
                                 />
-                            )}
-                          
-                        </Segment>
-                        <Segment>
-                            <ItemDetailsChat movieId={movie.id} />
-                        </Segment>
 
-                        <Segment>
+
+                            )}
                             <Button
                                 secondary
                                 icon='arrow left'
@@ -104,8 +100,20 @@ export default observer(function ItemDetails() {
                                 as={Link} to={'/movies'}
 
                             />
+                          
                         </Segment>
+                     
                     </Segment.Group>
+                </Grid.Column>
+                <Grid.Column width={6}>
+                   
+                    <Segment>
+                        <ItemDetailsChat movieId={movie.id} />
+                    </Segment>
+
+                    <Segment>
+
+                    </Segment>
                 </Grid.Column>
             </Grid>
         </Container>

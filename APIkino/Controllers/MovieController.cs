@@ -114,7 +114,7 @@ namespace APIkino.Controllers
 
         [HttpPost]
        [Authorize(Policy = sjekk.MustBeTheOwner)]
-        public async Task<ActionResult> AddMovie([FromForm] MovieDTO mr, IFormFile File)
+        public async Task<Movies> AddMovie([FromForm] MovieDTO mr, IFormFile File)
         {
             try
             {
@@ -132,18 +132,16 @@ namespace APIkino.Controllers
                 {
                    // var photo = await _photo.updatePhot(photoFile, movie.MovieName);
                     _logger.LogInformation("Post: api/movie ");
-                    return Ok(adding);
+                    return adding;
                 }
                 _logger.LogError("the POST call to /api/movies fieled. Task value was {mr}", mr);
-                return BadRequest();
+                return null;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "the POST call to /api/movies fieled. Task value was {mr}", mr);
 
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ex
-                    );
+                return null;
             }
 
 
@@ -232,39 +230,7 @@ namespace APIkino.Controllers
         }
 
 
-        /*
-        [HttpPost]
-        [Route("createComment")]
-
-        public async Task<ActionResult> createComment( int movieId, string body)
-        {
-
-            try
-            {
-                var movie = await _repository.Geten(movieId);
-
-                if (movie == null)
-                {
-                    _logger.LogInformation("Delete: api/movies/{Id}", movieId);
-                    return BadRequest();
-
-
-                }
-                var comment = await _repository.CreateComment(body, movieId);
-                if (comment == null) return BadRequest("comment is null");
-                return Ok(comment);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "the Delete call to api/movie/{Id} f", movieId);
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                   "Error getting data from the database"
-                   );
-
-            }
-        }
-        */
-
+   
 
     }
 }

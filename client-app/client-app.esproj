@@ -13,6 +13,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\features\Modals\" />
+    <Folder Include="src\features\photo\" />
     <Folder Include="src\features\Users\" />
     <Folder Include="src\Models\" />
   </ItemGroup>
