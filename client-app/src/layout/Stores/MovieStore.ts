@@ -131,12 +131,25 @@ export default class MovieStore {
         }
     };
 
-    updateMovie = async (movie: Movies) => {
+    updateMovie = async (movie: Movies,photoFile:Blob) => {
         this.loading = true;
         try {
-            await agent.movies.update(movie, movie.id);
+            var result = await agent.movies.update(movie, movie.id, photoFile);
+            const photoData = result.data.photo;
+            let returnMovie: Movies = {
+                id: movie.id,
+                movieName: movie.movieName,
+                mengde: movie.mengde,
+                description: movie.description,
+                price: movie.price,
+                photo: {
+                    id: photoData!.id,
+                    url: photoData!.url
+                }
+
+            }
             runInAction(() => {
-                this.movies = [...this.movies.filter(x => x.id !== movie.id), movie];
+                this.movies = [...this.movies.filter(x => x.id !== movie.id), returnMovie];
                 this.selectedMovie = movie;
                 this.loading = false;
             });

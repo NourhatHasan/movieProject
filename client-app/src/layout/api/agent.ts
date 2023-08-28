@@ -91,7 +91,20 @@ const movies = {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
     },
-    update: (movie: Movies, id: number) => requests.put<void>(`/Movie/${id}`, movie),
+
+    update: (movie: Movies, id: number, file: Blob) => {
+        const formData = new FormData();
+        formData.append('File', file!); // Append the file
+        formData.append('MovieName', movie.movieName);
+        formData.append('description', movie.description);
+        formData.append('price', movie.price.toString());
+        formData.append('mengde', movie.mengde.toString());
+
+        return axios.put<Movies>(`/Movie/${id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    },
+
     del: (id: number) => requests.delete<void>(`/Movie/${id}`),
 }
 

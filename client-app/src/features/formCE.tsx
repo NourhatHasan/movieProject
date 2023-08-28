@@ -112,7 +112,7 @@ export default observer(function FormCE() {
             values.photo = croppedPhoto;
 
             if (values.id) {
-                updateMovie(values).then(() => {
+                updateMovie(values, croppedPhoto).then(() => {
                     if (movie) {
                         navigate(`/movies/${movie.id}`);
                     } else {
