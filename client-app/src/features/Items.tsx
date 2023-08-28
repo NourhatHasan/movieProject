@@ -66,84 +66,85 @@ export const DashItems = observer( function DashItems({ movies }: Props) {
     
   //  console.log(movies.map(x => x.photos?.url));
     return (
-        <Card.Group itemsPerRow="4" >
-            {movies.map((movie: Movies) =>  
-               
-            (
-                <Card key={String(movie.id)}>
+             <Card.Group itemsPerRow="5" >
+                    {movies.map((movie: Movies) =>
 
-                  
-                    <Image src={movie.photo?.url || "/FilmLogo.jpg" }  size='medium' />
-                   
-                    <Card.Content>
-                       
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Card.Header style={{ flex: 1 }}>{movie.movieName}</Card.Header>
+                    (
+                        <Card key={String(movie.id)}>
 
-                            {userStore.user?.username !== 'Solin' && (
+
+                            <Image src={movie.photo?.url || "/FilmLogo.jpg"} size='medium' />
+
+                            <Card.Content>
+
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <Card.Header style={{ flex: 1 }}>{movie.movieName}</Card.Header>
+
+                                    {userStore.user?.username !== 'Solin' && (
+                                        <Button
+                                            onClick={() => updateWishList(movie.id)}
+                                            style={{ color: shopingStore.wishList.find(x => x.movieName === movie.movieName) ? 'red' : 'black' }}
+                                            icon="heart"
+                                        />)}
+                                </div>
+
+                                <Card.Description>{truncateDes(movie.description || '', 6)}</Card.Description>
+                            </Card.Content>
+                            <Card.Content>
+                                <Grid columns={2}>
+                                    <Grid.Column>
+                                        <Icon name="dollar sign" />
+                                        <span>{movie.price}</span>
+                                    </Grid.Column>
+                                    <Grid.Column>
+                                        <Icon name="film" />
+                                        <span>{movie.mengde}</span>
+                                    </Grid.Column>
+                                </Grid>
+                            </Card.Content>
+                            <Button.Group widths={2}>
                                 <Button
-                                    onClick={() => updateWishList(movie.id)}
-                                    style={{ color: shopingStore.wishList.find(x => x.movieName === movie.movieName) ? 'red' : 'black' }}
-                                    icon="heart"
-                                />)}
-                        </div>
-                        
-                        <Card.Description>{truncateDes(movie.description || '',6)}</Card.Description>
-                    </Card.Content>
-                    <Card.Content>
-                        <Grid columns={2}>
-                            <Grid.Column>
-                                <Icon name="dollar sign" />
-                                <span>{movie.price}</span>
-                            </Grid.Column>
-                            <Grid.Column>
-                                <Icon name="film" />
-                                <span>{movie.mengde}</span>
-                            </Grid.Column>
-                        </Grid>
-                    </Card.Content>
-                    <Button.Group widths={2}>
-                        <Button
-                            as={Link} to={`/movies/${movie.id}`}
-                            basic
-                            name={movie.id}
-                          //  onClick={(e) => handleView(e, movie.id)}
-                            color="green"
-                            icon="info circle"
-                            disabled={movieStore.loading && viewTarget === movie.id}
-                            loading={movieStore.loading && viewTarget === movie.id}
-                            fluid
-                        />
-
-                        {userStore.user?.username ==='Solin' ? (
-                            <Button
-                                basic
-                                name={movie.id}
-                                onClick={(e) => handleDelete(e, movie.id)}
-                                loading={movieStore.loading && target === movie.id}
-                                disabled={movieStore.loading && target === movie.id}
-                                color="red"
-                                icon="trash"
-                                fluid
-                            />
-                        ) : (
-                            <Button
-                                basic
+                                    as={Link} to={`/movies/${movie.id}`}
+                                    basic
                                     name={movie.id}
-                                    onClick={(e) => handleAdding(e, movie.id)}                      
-                                    loading={shopingStore.loading && addTarget === movie.id}
-                                    disabled={shopingStore.loading && addTarget === movie.id}
-                                color="blue"
-                                icon="cart plus"
-                                fluid
-                            />
-                        )}
+                                    //  onClick={(e) => handleView(e, movie.id)}
+                                    color="green"
+                                    icon="info circle"
+                                    disabled={movieStore.loading && viewTarget === movie.id}
+                                    loading={movieStore.loading && viewTarget === movie.id}
+                                    fluid
+                                />
 
-                    </Button.Group>
+                                {userStore.user?.username === 'Solin' ? (
+                                    <Button
+                                        basic
+                                        name={movie.id}
+                                        onClick={(e) => handleDelete(e, movie.id)}
+                                        loading={movieStore.loading && target === movie.id}
+                                        disabled={movieStore.loading && target === movie.id}
+                                        color="red"
+                                        icon="trash"
+                                        fluid
+                                    />
+                                ) : (
+                                    <Button
+                                        basic
+                                        name={movie.id}
+                                        onClick={(e) => handleAdding(e, movie.id)}
+                                        loading={shopingStore.loading && addTarget === movie.id}
+                                        disabled={shopingStore.loading && addTarget === movie.id}
+                                        color="blue"
+                                        icon="cart plus"
+                                        fluid
+                                    />
+                                )}
 
-                </Card>
-            ))}
-        </Card.Group>
+                            </Button.Group>
+
+                        </Card>
+                    ))}
+                </Card.Group>
+       
     );
 }
 )

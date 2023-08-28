@@ -23,7 +23,7 @@ export const Dashboard = observer(function  Dashboard( ) {
     return (
         <Segment divided="true" style={{ marginTop: '5em' }}>
             <Grid>
-                <Grid.Column width={12}>
+                <Grid.Column width={16}>
                     <DashItems
                         movies={movieStore.movies}
                     />
