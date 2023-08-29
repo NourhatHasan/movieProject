@@ -13,7 +13,7 @@ namespace KinoClass.Models
         [Required]
         public string Password { get; set; } = string.Empty;
 
-
+        public ICollection<RefreshTokens> RefreshTokens { get; set; } = new List<RefreshTokens>();
 
     }
 }

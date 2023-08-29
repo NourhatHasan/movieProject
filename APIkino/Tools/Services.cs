@@ -60,7 +60,9 @@ namespace APIkino.Tools
                             ValidateAudience = true,
                             ValidAudience = configuration["JWT:ValidAudience"],
                             ValidIssuer = configuration["JWT:ValidIssuer"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+                            ValidateLifetime= true,
+                            ClockSkew=TimeSpan.Zero,
                         };
 
                         //authentication for the Hub

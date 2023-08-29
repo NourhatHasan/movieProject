@@ -20,5 +20,8 @@ namespace APIkino.Data
         public DbSet<wishItems> wishList { get; set; }
         public DbSet<Comments> Comments { get; set; }
         public DbSet<photo> photos { get; set; }
+        public DbSet<RefreshTokens> refreshTokens { get; set; }
+
+       
     }
 }
