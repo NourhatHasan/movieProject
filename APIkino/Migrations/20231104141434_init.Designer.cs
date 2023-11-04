@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APIkino.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20230804082036_MovieComments")]
-    partial class MovieComments
+    [Migration("20231104141434_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,6 +87,9 @@ namespace APIkino.Migrations
                     b.Property<int>("MovieId")
                         .HasColumnType("int");
 
+                    b.Property<int>("StarRating")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AutherId");
@@ -113,10 +116,15 @@ namespace APIkino.Migrations
                     b.Property<int>("mengde")
                         .HasColumnType("int");
 
+                    b.Property<string>("photoId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("photoId");
 
                     b.ToTable("movies");
                 });
@@ -175,6 +183,20 @@ namespace APIkino.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("KinoClass.Models.photo", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("photos");
+                });
+
             modelBuilder.Entity("KinoClass.Models.wishItems", b =>
                 {
                     b.Property<int>("Id")
@@ -220,6 +242,15 @@ namespace APIkino.Migrations
                     b.Navigation("Auther");
 
                     b.Navigation("Movie");
+                });
+
+            modelBuilder.Entity("KinoClass.Models.Movies", b =>
+                {
+                    b.HasOne("KinoClass.Models.photo", "photo")
+                        .WithMany()
+                        .HasForeignKey("photoId");
+
+                    b.Navigation("photo");
                 });
 
             modelBuilder.Entity("KinoClass.Models.Movies", b =>

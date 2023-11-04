@@ -66,7 +66,7 @@ namespace APIkino.Repositories
 
                 // check if the movie exists with link quary
 
-                var Item = await (from movie in this.context.movies
+                var Item = await (from movie in this.context.Movies
                                   where cartItemToAddDto.MovieId == movie.Id
                                   && cartItemToAddDto.mengde <= movie.mengde
                                   select new CartItem
@@ -84,7 +84,7 @@ namespace APIkino.Repositories
                 else
                 {
 
-                    var movie = await this.context.movies.FindAsync(Item.MovieId);
+                    var movie = await this.context.Movies.FindAsync(Item.MovieId);
                     movie.mengde = movie.mengde - Item.mengde;
 
                     //adder to the database
@@ -189,7 +189,7 @@ namespace APIkino.Repositories
             var orders = new List<Order>();
             foreach (var item in cartItems)
             {
-                var movie = context.movies.FirstOrDefault(z => z.Id == item.MovieId);
+                var movie = context.Movies.FirstOrDefault(z => z.Id == item.MovieId);
                 var order = new Order
                 {
                     UserId = userId,
@@ -269,7 +269,7 @@ namespace APIkino.Repositories
             {
                 item.mengde = cartItemMengdeUpdate.mengde;
 
-                var movie = await this.context.movies.FindAsync(item.MovieId);
+                var movie = await this.context.Movies.FindAsync(item.MovieId);
                 movie.mengde = movie.mengde + gammelMengde - item.mengde;
 
                 await this.context.SaveChangesAsync();
@@ -294,7 +294,7 @@ namespace APIkino.Repositories
         public async Task<Movies> UpdateWishList(int movieId)
         {
             var user = await GetLoggedInUser();
-            var movie = await this.context.movies.FindAsync(movieId);
+            var movie = await this.context.Movies.FindAsync(movieId);
 
             if (await WishItemExsist(user.Id, movie.MovieName) == true)
             {

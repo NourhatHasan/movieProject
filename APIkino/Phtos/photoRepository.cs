@@ -24,7 +24,7 @@ namespace APIkino.Photo
 
         public async Task<photo> updatePhot(IFormFile File, string movieNeme)
         {
-            var movie = await _context.movies.FindAsync(movieNeme);
+            var movie = await _context.Movies.FindAsync(movieNeme);
             if (movie.photo != null)
             {
                 var deletePhoto = _photoAccessor.DeletePhoto(movie.photo.Id);

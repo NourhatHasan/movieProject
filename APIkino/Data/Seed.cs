@@ -1,4 +1,5 @@
 ﻿using KinoClass.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace APIkino.Data
 {
@@ -6,7 +7,7 @@ namespace APIkino.Data
     {
         public static async Task SeedData(Context context)
         {
-            if (!context.movies.Any())
+            if (!context.Movies.Any())
             {
                
                 var movies = new List<Movies>
@@ -18,7 +19,9 @@ namespace APIkino.Data
                       " cut short by the rise of flesh-possessing demons",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo = null,  
+                       comments = null  
                     
                     },
                     new Movies
@@ -29,7 +32,9 @@ namespace APIkino.Data
                       "by a serial killer who is clearly inspired by various horror films. No one is safe and everyone is a suspect.",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo=null,
+                       comments = null
 
                     }, new Movies
                     {
@@ -39,7 +44,11 @@ namespace APIkino.Data
                       " There she meets Nick, her new stepbrother. They fall madly in love in secret",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo=null,
+                       comments = null
+
+
 
                     }, new Movies
                     {
@@ -48,7 +57,10 @@ namespace APIkino.Data
                       " cut short by the rise of flesh-possessing demons",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo=null,
+                       comments = null
+
 
                     }, new Movies
                     {
@@ -57,7 +69,9 @@ namespace APIkino.Data
                       " cut short by the rise of flesh-possessing demons",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo=null,
+                       comments = null
 
                     }, new Movies
                     {
@@ -66,7 +80,11 @@ namespace APIkino.Data
                       "by the successful and well-known music manager Suzanne.",
 
                        price= 25,
-                       mengde=10
+                       mengde=10,
+                       photo=null,
+                       comments = null
+
+
 
                     }, new Movies
                     {
@@ -78,14 +96,17 @@ namespace APIkino.Data
                       " their strength and wit to aid the Chinese people and bring freedom to the land",
 
                        price= 25,
-                       mengde=10
+                         mengde=10,
+                       photo=null,
+                       comments = null
 
                     },
 
                 };
 
-                await context.movies.AddRangeAsync(movies);
+                await context.Movies.AddRangeAsync(movies);
                 await context.SaveChangesAsync();
+                Console.WriteLine();
             }
         }
     }

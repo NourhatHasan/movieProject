@@ -27,7 +27,7 @@ namespace APIkino.SignalR
 
             public async Task<List<CommentDTO>> Handle(Querry request, CancellationToken cancellationToken)
             {
-                var movie = await _context.movies.FindAsync(request.movieId);
+                var movie = await _context.Movies.FindAsync(request.movieId);
                 if (movie == null)
                 {
                     return null;

@@ -44,7 +44,7 @@ namespace APIkino.Repositories
             //? will chacke if it is null or not if it is not null it will get the value 
 
 
-            return await (from movie in _context.movies
+            return await (from movie in _context.Movies
                           .Include(x=>x.photo)
                           select new Movies
                           {
@@ -63,7 +63,7 @@ namespace APIkino.Repositories
 
         public async Task<Movies> Geten(int Id)
         {
-            var movie = await _context.movies.Include(x=>x.photo).FirstOrDefaultAsync(x=>x.Id==Id);
+            var movie = await _context.Movies.Include(x=>x.photo).FirstOrDefaultAsync(x=>x.Id==Id);
             return movie;
         }
 
@@ -96,14 +96,14 @@ namespace APIkino.Repositories
                 photo= photo,
             };
             //takl to the database using context for store the new movie 
-            await _context.movies.AddAsync(Movie);
+            await _context.Movies.AddAsync(Movie);
             await _context.SaveChangesAsync();
             return Movie;
         }
 
         public async Task<Movies> UpdateMovie(int Id, Movies update, IFormFile File)
         {
-            var movie = await _context.movies.FindAsync(Id);
+            var movie = await _context.Movies.FindAsync(Id);
             if (movie.photo != null)
             {
                 var deletePhoto = _photoAccessor.DeletePhoto(movie.photo.Id);
@@ -147,7 +147,7 @@ namespace APIkino.Repositories
 
         public async Task<string> Delete(int Id)
         {
-            var movie = await _context.movies.FindAsync(Id);
+            var movie = await _context.Movies.FindAsync(Id);
             if (movie.photo != null)
             {
                 var deletePhoto = _photoAccessor.DeletePhoto(movie.photo.Id);
